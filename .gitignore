@@ -14,3 +14,8 @@ public/logo.svg
 public/logos/studi-paper-airplane-logo-rounded.png
 public/logos/amy-icon-cat-alt.png
 public/logos/optimized/*-384.png
+src/pages/ai-engineer.astro
+src/pages/ai-enginere.astro
+src/pages/studi-demo.astro
+src/components/AiEngineerProof.astro
+src/components/StudiDemoMockups.astro

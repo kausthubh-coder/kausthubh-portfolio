@@ -8,8 +8,6 @@ A fast, static Astro portfolio for selected projects and engineering proof.
 - `/projects/studi/` - Studi case study
 - `/projects/amy/` - Amy case study
 - `/projects/kriyan/` - Kriyan case study
-- `/studi-demo/` - scroll-linked Studi architecture walkthrough
-- `/ai-engineer/` - Studi engineering evidence
 
 ## Commands
 
@@ -19,4 +17,4 @@ bun run dev
 bun run build
 ```
 
-The site uses self-hosted Sora, optimized local project assets, and a small inline script for the interactive Studi walkthrough. The static build emits no standalone client JavaScript bundle.
+The site uses self-hosted Sora and optimized local project assets. The static build emits no standalone client JavaScript bundle.

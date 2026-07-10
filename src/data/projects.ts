@@ -161,11 +161,6 @@ export const projects: Project[] = [
         href: "https://github.com/kausthubh-coder/studi",
         note: "public source",
       },
-      {
-        label: "AI engineer proof",
-        href: "/ai-engineer/",
-        note: "systems + verification",
-      },
     ],
   },
   {
