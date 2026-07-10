@@ -1,0 +1,141 @@
+---
+import * as simpleIcons from "simple-icons";
+import { projects } from "../../data/projects";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const iconFor = (key?: string): { path: string } | null => {
+  if (!key) return null;
+  const icon = (simpleIcons as unknown as Record<string, { path: string } | undefined>)[key];
+  return icon ?? null;
+};
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const isExternalLink = (href: string) => /^https?:\/\//.test(href);
+---
+
+<BaseLayout title={`${project.name} | kausthubh`} description={project.summary}>
+  <main class="pd-shell">
+    <header class="pd-top">
+      <a class="pd-back" href="/">
+        <span aria-hidden="true">&larr;</span>
+        back home
+      </a>
+    </header>
+
+    <section class="pd-hero" aria-labelledby="project-title">
+      <div class="pd-hero__row">
+        <img
+          class="pd-hero__logo"
+          src={project.logo}
+          alt={project.alt}
+          style={`view-transition-name: project-logo-${project.slug};`}
+          width="384"
+          height="384"
+          loading="eager"
+          decoding="async"
+        />
+        <h1 id="project-title">{project.name}</h1>
+      </div>
+      <p class="pd-tagline">{project.tagline}</p>
+    </section>
+
+    <section class="pd-section" aria-labelledby="story-title">
+      <div class="pd-heading">
+        <h2 id="story-title">why I built this</h2>
+        <span class="pd-hint">the yap, as promised</span>
+      </div>
+      <div class="pd-story">
+        {project.story.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </section>
+
+    <section class="pd-section" aria-labelledby="features-title">
+      <div class="pd-heading">
+        <h2 id="features-title">what it actually does</h2>
+        <span class="pd-hint">the real features, no fluff</span>
+      </div>
+      <ol class="pd-features">
+        {
+          project.features.map((feature, index) => (
+            <li tabindex="0">
+              <span class="pd-features__index">{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>{feature.title}</h3>
+                <p>{feature.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="pd-section" aria-labelledby="build-title">
+      <div class="pd-heading">
+        <h2 id="build-title">how it's built</h2>
+        <span class="pd-hint">under the hood</span>
+      </div>
+      <div class="pd-build">
+        {
+          project.architecture.map((item) => (
+            <article class="pd-build__row">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="pd-stack" aria-label="Tech stack">
+        <p class="pd-stack__label">runs on</p>
+        <div class="pd-stack__grid">
+          {
+            project.stack.map((item) => {
+              const icon = iconFor(item.icon);
+              return (
+                <span class="pd-stack__item" tabindex="0">
+                  {icon ? (
+                    <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                      <path d={icon.path} />
+                    </svg>
+                  ) : (
+                    <b aria-hidden="true">{item.name.charAt(0)}</b>
+                  )}
+                  <strong>{item.name}</strong>
+                  <em>{item.why}</em>
+                </span>
+              );
+            })
+          }
+        </div>
+        <p class="pd-stack__default">hover a tech to hear why I picked it</p>
+      </div>
+    </section>
+
+    <div class="pd-resources" aria-label="Project links">
+      {
+        project.links.map((link) => (
+          <div class="pd-resource-row">
+            <p>{link.label}:</p>
+            <a
+              href={link.href}
+              target={isExternalLink(link.href) ? "_blank" : undefined}
+              rel={isExternalLink(link.href) ? "noreferrer" : undefined}
+            >
+              {link.note}
+            </a>
+          </div>
+        ))
+      }
+      <div class="pd-resource-row">
+        <p>seen enough:</p>
+        <a href="/">back home</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

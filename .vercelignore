@@ -1,0 +1,12 @@
+.artifacts
+.astro
+.design
+.sandbox
+dist
+node_modules
+.DS_Store
+public/logo.svg
+public/logos/studi-paper-airplane-logo-rounded.png
+public/logos/amy-icon-cat-alt.png
+public/logos/optimized/*-384.png
+public/design.html

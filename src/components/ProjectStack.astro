@@ -1,0 +1,33 @@
+---
+import { projects } from "../data/projects";
+---
+
+<div class="project-stack" aria-label="Favorite projects">
+  {
+    projects.map((project, index) => (
+      <a
+        class="project-stack__item"
+        href={`/projects/${project.slug}/`}
+        aria-label={`${project.name}: ${project.description}`}
+        style={`--project-index: ${index}; --project-tilt: ${project.angle}deg;`}
+      >
+        <span class="project-stack__logo-frame">
+          <img
+            class="project-stack__logo"
+            src={project.logo}
+            alt={project.alt}
+            style={`view-transition-name: project-logo-${project.slug};`}
+            width="384"
+            height="384"
+            loading="lazy"
+            decoding="async"
+          />
+        </span>
+        <span class="project-stack__detail">
+          <span class="project-stack__name">{project.name}</span>
+          <span class="project-stack__description">{project.description}</span>
+        </span>
+      </a>
+    ))
+  }
+</div>

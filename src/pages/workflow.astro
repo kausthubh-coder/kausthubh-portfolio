@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const tools = [
+  { name: "Astro", use: "static portfolio surfaces, fast pages, low JavaScript by default" },
+  { name: "React + Motion", use: "small islands where interaction needs state or choreographed animation" },
+  { name: "TypeScript", use: "typed project data, safer UI contracts, fewer mystery regressions" },
+  { name: "Bun", use: "quick local scripts, builds, and dependency work" },
+  { name: "AI agents", use: "planning, implementation loops, review passes, and browser verification" },
+  { name: "Design tools", use: "mockups, logo passes, font comparisons, and visual direction before code" },
+];
+
+const loop = [
+  "Collect the rough taste first: screenshots, tiny sketches, and what feels wrong.",
+  "Make a static version fast so layout and copy can be judged in the browser.",
+  "Add motion only where it explains the object or makes the transition feel intentional.",
+  "Verify with builds, screenshots, mobile widths, and the boring performance checks.",
+  "Write down the decision so the next pass starts from evidence instead of vibes.",
+];
+
+const principles = [
+  "Static first",
+  "Motion with a job",
+  "Small tools over giant systems",
+  "Proof before confidence",
+  "Useful enough to ship",
+];
+---
+
+<BaseLayout title="Workflow | kausthubh" description="Kausthubh's tools, workflow, and AI-assisted build loop.">
+  <main class="detail-page workflow-page">
+    <a href="/" class="back-link">Back home</a>
+
+    <section class="detail-hero detail-hero--workflow" aria-labelledby="workflow-title">
+      <p class="detail-kicker">workflow + tools</p>
+      <h1 id="workflow-title">The build loop is taste, speed, and proof.</h1>
+      <p>
+        I am trying to build practical things across full-stack, AI, robotics, and design. The workflow is simple:
+        get the idea visible, make it fast, test it honestly, and keep the parts that still feel alive.
+      </p>
+    </section>
+
+    <section class="workflow-strip" aria-label="Current principles">
+      {principles.map((principle) => <span>{principle}</span>)}
+    </section>
+
+    <section class="detail-grid" aria-labelledby="tools-title">
+      <div>
+        <p class="detail-kicker">tools I reach for</p>
+        <h2 id="tools-title">Small stack, sharp edges.</h2>
+      </div>
+      <div class="tool-ledger">
+        {
+          tools.map((tool) => (
+            <article class="tool-row">
+              <h3>{tool.name}</h3>
+              <p>{tool.use}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="detail-grid" aria-labelledby="loop-title">
+      <div>
+        <p class="detail-kicker">how a pass works</p>
+        <h2 id="loop-title">From rough idea to something inspected.</h2>
+      </div>
+      <ol class="process-list">
+        {loop.map((step) => <li>{step}</li>)}
+      </ol>
+    </section>
+
+    <section class="detail-note" aria-labelledby="edge-title">
+      <h2 id="edge-title">What I am pushing toward</h2>
+      <p>
+        I want the work to compound: better interfaces, stronger systems, enough robotics and AI depth to build real
+        products, and enough discipline outside the screen to take care of myself and my family.
+      </p>
+    </section>
+  </main>
+</BaseLayout>

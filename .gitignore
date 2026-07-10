@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+.artifacts/
+.design/
+.sandbox/
+
+.env*
+*.log
+.DS_Store
+public/design.html
+public/logo.svg
+public/logos/studi-paper-airplane-logo-rounded.png
+public/logos/amy-icon-cat-alt.png
+public/logos/optimized/*-384.png

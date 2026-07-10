@@ -1,0 +1,80 @@
+---
+import { siGithub, siInstagram, siX, siYoutube } from "simple-icons";
+import IntroSequence from "../components/IntroSequence.astro";
+import ProjectStack from "../components/ProjectStack.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const socials = [
+  { label: "GitHub", href: "https://github.com/kausthubh-coder", icon: siGithub },
+  { label: "X", href: "https://x.com/KausthubhOS", icon: siX },
+  { label: "Instagram", href: "https://instagram.com/kausthubh2", icon: siInstagram },
+  { label: "YouTube", href: "https://www.youtube.com/@bluez6812", icon: siYoutube },
+];
+
+const emailHref = "mailto:kausthubh2007@gmail.com";
+const phoneHref = "tel:+19803274282";
+---
+
+<BaseLayout introBoot>
+  <main class="mockup-shell">
+    <section class="mockup-panel" aria-labelledby="intro-heading">
+      <div class="identity-row">
+        <a href="/" class="identity-mark" aria-label="Home">
+          <img
+            class="identity-mark__image"
+            src="/logo.webp"
+            alt=""
+            width="72"
+            height="72"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </a>
+        <h1 class="identity-name" id="intro-heading" aria-label="Kausthubh dot N">
+          <span class="identity-name__word">Kausthubh</span><span class="identity-name__dot">.</span><span
+            class="identity-name__last">N</span
+          >
+        </h1>
+        <nav class="social-nav" aria-label="Social links">
+          {
+            socials.map((social) => (
+              <a class="social-link" href={social.href} aria-label={social.label}>
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                  <path d={social.icon.path} />
+                </svg>
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+
+      <p class="intro-copy">
+        just tryna take care of myself, retire my parents, and build cool shit.
+      </p>
+
+      <div class="projects-row">
+        <div class="section-heading">
+          <h2 id="projects-heading">my favorite projects</h2>
+          <p class="project-hint"><span>click on them to hear me yap abt it</span></p>
+        </div>
+        <ProjectStack />
+      </div>
+
+      <div class="resource-rows" aria-label="Portfolio links">
+        <div class="resource-row">
+          <p>my stack + AI workflow:</p>
+          <a href="/workflow/">click here</a>
+        </div>
+        <div class="resource-row">
+          <p>my email + phone:</p>
+          <span class="contact-inline">
+            <a href={emailHref}>mail</a>
+            <span aria-hidden="true">/</span>
+            <a href={phoneHref}>+1 980-327-4282</a>
+          </span>
+        </div>
+      </div>
+    </section>
+  </main>
+  <IntroSequence />
+</BaseLayout>

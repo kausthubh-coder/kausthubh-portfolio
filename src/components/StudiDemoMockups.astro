@@ -1,0 +1,389 @@
+---
+const stackChoices = [
+  {
+    short: "Cx",
+    name: "Convex",
+    why: "Durable threads, messages, usage, Spark records, and backend actions live together, so the agent works with real product state.",
+  },
+  {
+    short: "Ag",
+    name: "Agent",
+    why: "The tutor has a server-owned tool boundary. The UI renders outcomes instead of orchestrating model behavior.",
+  },
+  {
+    short: "OR",
+    name: "Router",
+    why: "Model choice stays configurable. The product can move between speed, balance, and quality profiles without rewriting UI.",
+  },
+  {
+    short: "Cl",
+    name: "Clerk",
+    why: "Identity and subscription state stay out of the agent loop, but still gate usage and account-level behavior.",
+  },
+  {
+    short: "Vr",
+    name: "Sandbox",
+    why: "Reserved for heavier Code Spark execution where files, commands, and cleanup matter more than instant iframe rendering.",
+  },
+];
+
+const demoSteps = [
+  {
+    eyebrow: "",
+    title: "See the product. Then inspect the decisions behind it.",
+    screen: "Studi overview",
+    kind: "overview",
+    body:
+      "A guided tour for people evaluating the work: every feature is paired with the architecture, tradeoffs, and evidence behind it, so the product and the engineering decisions stay connected.",
+    cursorX: 77,
+    cursorY: 74,
+    action: "scroll",
+    side: "intro",
+  },
+  {
+    eyebrow: "Chat",
+    title: "The normal chat page is the control room.",
+    screen: "Tutor chat",
+    kind: "chat",
+    body:
+      "Studi starts from the chat thread: student context, files, streaming answers, usage state, and Spark expansion all branch from one learning session.",
+    cursorX: 69,
+    cursorY: 83,
+    action: "send",
+    side: "diagram",
+  },
+  {
+    eyebrow: "Spark generation",
+    title: "One create_spark tool routes to many artifact workers.",
+    screen: "Spark generation",
+    kind: "spark",
+    body:
+      "This is the main agentic architecture story. The agent receives one clean tool surface; the backend owns catalog routing, worker prompts, validation, repair, telemetry, and rendering.",
+    cursorX: 52,
+    cursorY: 52,
+    action: "route",
+    side: "spark",
+  },
+  {
+    eyebrow: "Scene Spark",
+    title: "Lightweight scenes use an iframe runtime, not a VM.",
+    screen: "Scene Spark",
+    kind: "scene",
+    body:
+      "Generated educational scenes need to be fast, visual, and safe. The runtime uses sandboxed iframe output plus a small postMessage contract for ready, resize, checkpoint, and error events.",
+    cursorX: 37,
+    cursorY: 48,
+    action: "click",
+    side: "code",
+  },
+  {
+    eyebrow: "Code/Test Spark",
+    title: "Heavier code work gets a provider boundary.",
+    screen: "Code Spark",
+    kind: "code",
+    body:
+      "Code Spark is intentionally separated from Scene Spark. It needs editable files, visible checks, provider cleanup, and eventually real sandbox execution instead of a lightweight visual iframe.",
+    cursorX: 72,
+    cursorY: 62,
+    action: "run checks",
+    side: "provider",
+  },
+  {
+    eyebrow: "Proof",
+    title: "The walkthrough ends with evidence and caveats.",
+    screen: "Proof ledger",
+    kind: "proof",
+    body:
+      "The final state should make the hiring signal obvious: what shipped, what was tested, what was browser-proven, and what is still not being overclaimed.",
+    cursorX: 46,
+    cursorY: 39,
+    action: "inspect",
+    side: "proof",
+  },
+];
+
+const miniFlow = ["Student", "Chat", "Agent", "create_spark", "Worker", "Renderer"];
+const toolSnippet = `tools: {
+  create_spark: createSparkToolForProfile(profile)
+}`;
+const runtimeSnippet = `ready -> resize -> interaction
+checkpoint -> error`;
+---
+
+<main class="studi-demo-page">
+  <nav class="studi-demo-nav" aria-label="Studi demo">
+    <a href="/ai-engineer/" class="back-link" aria-label="Back to AI engineer proof">
+      <span aria-hidden="true">←</span>
+      AI engineer proof
+    </a>
+    <div class="studi-demo-nav__identity" aria-hidden="true">
+      <i></i>
+      <strong>Studi</strong>
+      <span>architecture walkthrough</span>
+    </div>
+    <div class="studi-demo-nav__progress" aria-label="Chapter 1 of 6" data-demo-progress-label>
+      <span data-demo-current>01</span>
+      <i></i>
+      <span>06</span>
+    </div>
+  </nav>
+
+  <section class="studi-scroll-experience" data-studi-demo aria-labelledby="studi-demo-title">
+    <div class="studi-demo-stage">
+      <div class="demo-stage-meta" aria-hidden="true">
+        <span data-demo-label>Product overview</span>
+        <span>scroll-linked proof</span>
+      </div>
+
+      <div class="demo-laptop" role="group" aria-label="Interactive Studi product walkthrough">
+        <div class="demo-laptop__screen">
+          <div class="mock-browser-bar" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <p>studi.app / workspace</p>
+          </div>
+
+          <div class="mock-app-bar" aria-hidden="true">
+            <div><b>S</b><strong>Studi</strong></div>
+            <span>learning workspace</span>
+            <i>live</i>
+          </div>
+
+          {demoSteps.map((step, index) => (
+            <div
+              class:list={["demo-screen-state", `demo-screen-state--${step.kind}`, index === 0 && "is-active"]}
+              data-screen={index}
+              aria-hidden={index === 0 ? "false" : "true"}
+            >
+              {step.eyebrow && <small>{step.eyebrow}</small>}
+              <strong>{step.screen}</strong>
+
+              {step.kind === "overview" && (
+                <div class="mock-overview-grid">
+                  <span><b>threads</b><small>durable context</small></span>
+                  <span><b>agent</b><small>server-owned tools</small></span>
+                  <span><b>sparks</b><small>typed artifacts</small></span>
+                  <span><b>proof</b><small>visible checks</small></span>
+                </div>
+              )}
+
+              {step.kind === "chat" && (
+                <div class="mock-chat">
+                  <div class="mock-chat__context"><span>calculus</span><span>2 files</span></div>
+                  <p class="mock-user">how do derivatives actually work?</p>
+                  <p class="mock-agent">Let’s make the slope visible instead of just defining it.</p>
+                  <div class="mock-composer"><span>Ask a follow-up</span><b>↑</b></div>
+                </div>
+              )}
+
+              {step.kind === "spark" && (
+                <div class="mock-pipeline">
+                  {miniFlow.map((item, itemIndex) => <span><b>{String(itemIndex + 1).padStart(2, "0")}</b>{item}</span>)}
+                </div>
+              )}
+
+              {step.kind === "scene" && (
+                <div class="mock-scene">
+                  <div class="mock-scene__canvas"><i></i><b>slope = 2.4</b></div>
+                  <span>checkpoint emitted · resize stable</span>
+                </div>
+              )}
+
+              {step.kind === "code" && (
+                <div class="mock-code-panel">
+                  <p><span>main.ts</span><span>sandbox run</span></p>
+                  <code>runChecks()</code>
+                  <div><span>✓ compiles</span><span>✓ 3 visible checks</span><span>✓ cleanup</span></div>
+                </div>
+              )}
+
+              {step.kind === "proof" && (
+                <div class="mock-proof-list">
+                  <span><b>✓</b> build passed</span>
+                  <span><b>✓</b> browser proof</span>
+                  <span><b>✓</b> known gaps listed</span>
+                </div>
+              )}
+
+              <em>{step.action}</em>
+            </div>
+          ))}
+
+          <div class="demo-cursor" aria-hidden="true">
+            <span></span>
+          </div>
+        </div>
+        <div class="demo-laptop__hinge"></div>
+        <div class="demo-laptop__base"></div>
+      </div>
+
+      <div class="demo-stage-progress" aria-hidden="true">
+        <div><span data-demo-progress></span></div>
+        <p><strong data-demo-current>01</strong><span data-demo-label>Product overview</span></p>
+      </div>
+    </div>
+
+    <div class="studi-demo-copy">
+      {demoSteps.map((step, index) => (
+        <article
+          class:list={["scroll-step", `scroll-step--${step.side}`, index === 0 && "is-active"]}
+          data-step={index}
+          data-label={step.eyebrow || "Product overview"}
+          aria-current={index === 0 ? "step" : undefined}
+        >
+          <div class="step-sequence" aria-hidden="true">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <i></i>
+            <span>06</span>
+          </div>
+          {step.eyebrow && <p>{step.eyebrow}</p>}
+          {index === 0
+            ? <h1 id="studi-demo-title">{step.title}</h1>
+            : <h2>{step.title}</h2>}
+          <span>{step.body}</span>
+
+          {step.side === "intro" && (
+            <div class="intro-panel">
+              <div class="stack-selector" role="group" aria-label="Technology stack with implementation rationale">
+                <div class="stack-selector__heading">
+                  <strong>Stack decisions</strong>
+                  <span>hover or focus</span>
+                </div>
+                <div class="stack-orbit">
+                {stackChoices.map((choice) => (
+                    <button type="button" class="stack-choice" aria-label={`${choice.name}: ${choice.why}`}>
+                      <span>{choice.short}</span>
+                      <strong>{choice.name}</strong>
+                      <em>{choice.why}</em>
+                    </button>
+                ))}
+                </div>
+                <p class="stack-selector__default">Each tool owns one clear boundary. Explore a choice to see the reason it exists.</p>
+              </div>
+              <div class="scroll-note">
+                <span aria-hidden="true">↓</span>
+                <p><strong>Scroll to inspect the build.</strong> The product stays pinned while this side becomes architecture, code, and proof.</p>
+              </div>
+            </div>
+          )}
+
+          {step.side === "diagram" && (
+            <div class="compact-diagram" role="group" aria-label="Chat architecture diagram">
+              <span>Composer</span>
+              <span>Convex thread</span>
+              <span>Agent response</span>
+              <span>Spark slot</span>
+            </div>
+          )}
+
+          {step.side === "spark" && (
+            <div class="implementation-card">
+              <strong>Why this is the main flex</strong>
+              <p>Not one tool per Spark. One tool call carries a <code>sparkId</code>, then backend code dispatches to specialized workers.</p>
+              <pre><code>{toolSnippet}</code></pre>
+            </div>
+          )}
+
+          {step.side === "code" && (
+            <div class="implementation-card">
+              <strong>Runtime contract</strong>
+              <p>The iframe does not just display HTML. It reports lifecycle and learning events back to Studi.</p>
+              <pre><code>{runtimeSnippet}</code></pre>
+            </div>
+          )}
+
+          {step.side === "provider" && (
+            <div class="compact-diagram compact-diagram--provider" role="group" aria-label="Code Spark provider diagram">
+              <span>UI contract</span>
+              <span>local fake</span>
+              <span>Vercel Sandbox</span>
+              <span>cleanup</span>
+            </div>
+          )}
+
+          {step.side === "proof" && (
+            <div class="proof-mini-ledger">
+              <span>Scene Spark deployed</span>
+              <span>Code Spark merge-ready source</span>
+              <span>Voice foundation caveated</span>
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    const roots = document.querySelectorAll("[data-studi-demo]");
+
+    for (const root of roots) {
+      const steps = Array.from(root.querySelectorAll("[data-step]"));
+      const screens = Array.from(root.querySelectorAll("[data-screen]"));
+      const laptop = root.querySelector<HTMLElement>(".demo-laptop");
+      const cursor = root.querySelector<HTMLElement>(".demo-cursor");
+      const currentLabels = Array.from(root.parentElement?.querySelectorAll<HTMLElement>("[data-demo-current]") ?? []);
+      const chapterLabels = Array.from(root.querySelectorAll<HTMLElement>("[data-demo-label]"));
+      const progress = root.querySelector<HTMLElement>("[data-demo-progress]");
+      const navProgress = root.parentElement?.querySelector<HTMLElement>("[data-demo-progress-label]");
+      const positions = [
+        [77, 74],
+        [69, 83],
+        [52, 52],
+        [37, 48],
+        [72, 62],
+        [46, 39],
+      ];
+      let activeIndex = -1;
+      let clickTimer = 0;
+
+      const setActive = (index: number) => {
+        if (index === activeIndex) return;
+        activeIndex = index;
+        const activeStep = steps[index];
+        const label = activeStep?.getAttribute("data-label") ?? "Product overview";
+        const current = String(index + 1).padStart(2, "0");
+
+        steps.forEach((step, stepIndex) => {
+          const isActive = stepIndex === index;
+          step.classList.toggle("is-active", isActive);
+          if (isActive) step.setAttribute("aria-current", "step");
+          else step.removeAttribute("aria-current");
+        });
+        screens.forEach((screen, screenIndex) => {
+          const isActive = screenIndex === index;
+          screen.classList.toggle("is-active", isActive);
+          screen.setAttribute("aria-hidden", String(!isActive));
+        });
+        currentLabels.forEach((node) => node.textContent = current);
+        chapterLabels.forEach((node) => node.textContent = label);
+        if (progress) progress.style.width = `${((index + 1) / steps.length) * 100}%`;
+        navProgress?.setAttribute("aria-label", `Chapter ${index + 1} of ${steps.length}: ${label}`);
+
+        const [x, y] = positions[index] ?? positions[0];
+        cursor?.style.setProperty("--cursor-x", `${x}%`);
+        cursor?.style.setProperty("--cursor-y", `${y}%`);
+        laptop?.classList.remove("is-clicking");
+        window.clearTimeout(clickTimer);
+        clickTimer = window.setTimeout(() => laptop?.classList.add("is-clicking"), 80);
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) return;
+          setActive(Number(visible.target.getAttribute("data-step") ?? 0));
+        },
+        {
+          rootMargin: "-36% 0px -36% 0px",
+          threshold: [0.2, 0.5, 0.8],
+        },
+      );
+
+      steps.forEach((step) => observer.observe(step));
+      setActive(0);
+    }
+  </script>
+</main>

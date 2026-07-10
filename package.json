@@ -1,0 +1,17 @@
+{
+  "name": "kausthubh-portfolio",
+  "dependencies": {
+    "@astrojs/check": "latest",
+    "astro": "latest",
+    "simple-icons": "latest",
+    "typescript": "latest"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "check": "astro check",
+    "preview": "astro preview"
+  },
+  "type": "module"
+}

@@ -1,0 +1,91 @@
+<div class="intro-shell intro-shell--stack" aria-hidden="true">
+  <div class="intro-flight">
+    <div class="intro-piece-stage">
+      <img
+        class="intro-start-logo"
+        src="/logo.webp"
+        alt=""
+        width="72"
+        height="72"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+    <span class="intro-word-run">
+      <span class="intro-name-tail">Kausthubh.</span>
+      <span class="intro-word-n">N</span>
+    </span>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const doc = document.documentElement;
+    const shell = document.querySelector(".intro-shell");
+    const flight = document.querySelector(".intro-flight");
+    if (!shell || !flight || doc.dataset.introState === "done" || doc.dataset.introReady !== "true") return;
+
+    const phases = ["stack", "word", "land"];
+    const fallbackLogoSize = 72;
+    const fallbackIdentityWidth = 360;
+    const easeOut = "cubic-bezier(0.16, 1, 0.3, 1)";
+    const timers = [];
+
+    const finish = () => {
+      shell.remove();
+      doc.dataset.introState = "done";
+      delete doc.dataset.introReady;
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      finish();
+      return;
+    }
+
+    const measure = () => {
+      const target = document.querySelector(".identity-mark");
+      const name = document.querySelector(".identity-name");
+      const targetRect = target?.getBoundingClientRect();
+      const nameRect = name?.getBoundingClientRect();
+      const logoSize = Math.round(targetRect?.width || fallbackLogoSize);
+      const identityWidth = Math.round(
+        targetRect && nameRect ? nameRect.right - targetRect.left : fallbackIdentityWidth,
+      );
+
+      return {
+        centerX: Math.round(window.innerWidth / 2),
+        centerY: Math.round(window.innerHeight / 2),
+        logoSize,
+        identityWidth,
+        targetX: Math.round(targetRect?.left || window.innerWidth / 2 - logoSize / 2),
+        targetY: Math.round(targetRect?.top || window.innerHeight / 2 - logoSize / 2),
+      };
+    };
+
+    const scaleFor = (phase) => {
+      if (phase === "stack") return 1.56;
+      if (phase === "word") return 1.04;
+      return 1;
+    };
+
+    const place = (phase, immediate = false) => {
+      const metrics = measure();
+      const scale = scaleFor(phase);
+      const visualWidth = phase === "word" ? metrics.identityWidth : metrics.logoSize;
+      const x = phase === "land" ? metrics.targetX : Math.round(metrics.centerX - (visualWidth * scale) / 2);
+      const y = phase === "land" ? metrics.targetY : Math.round(metrics.centerY - (metrics.logoSize * scale) / 2);
+
+      phases.forEach((name) => shell.classList.toggle(`intro-shell--${name}`, name === phase));
+      flight.style.transitionDuration = immediate ? "0ms" : phase === "land" ? "480ms" : "280ms";
+      flight.style.transitionTimingFunction = easeOut;
+      flight.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+    };
+
+    place("stack", true);
+    shell.dataset.ready = "true";
+
+    timers.push(window.setTimeout(() => place("word"), 900));
+    timers.push(window.setTimeout(() => place("land"), 1420));
+    timers.push(window.setTimeout(finish, 1840));
+  })();
+</script>
