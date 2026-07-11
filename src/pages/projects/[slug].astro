@@ -18,9 +18,10 @@ export function getStaticPaths() {
 
 const { project } = Astro.props;
 const isExternalLink = (href: string) => /^https?:\/\//.test(href);
+const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")} | kausthubh`;
 ---
 
-<BaseLayout title={`${project.name} | kausthubh`} description={project.summary}>
+<BaseLayout title={pageTitle} description={project.summary}>
   <main class="pd-shell">
     <header class="pd-top">
       <a class="pd-back" href="/">
@@ -44,6 +45,44 @@ const isExternalLink = (href: string) => /^https?:\/\//.test(href);
         <h1 id="project-title">{project.name}</h1>
       </div>
       <p class="pd-tagline">{project.tagline}</p>
+      <p class="pd-summary">{project.summary}</p>
+    </section>
+
+    <section
+      class={`pd-preview pd-preview--${project.previewLayout}`}
+      aria-labelledby="preview-title"
+    >
+      <div class="pd-heading">
+        <h2 id="preview-title">inside the app</h2>
+        <span class="pd-hint">real product screens</span>
+      </div>
+      <div
+        class="pd-preview__grid"
+        tabindex="0"
+        aria-label={`${project.name} product screenshots`}
+      >
+        {
+          project.previews.map((preview, index) => (
+            <figure class:list={["pd-preview__item", { "pd-preview__item--mobile": preview.mobile }]}>
+              <div class="pd-preview__frame">
+                <img
+                  src={preview.src}
+                  alt={preview.alt}
+                  width={preview.width}
+                  height={preview.height}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  fetchpriority={index === 0 ? "high" : "auto"}
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <strong>{preview.title}</strong>
+                <span>{preview.caption}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
     </section>
 
     <section class="pd-section" aria-labelledby="story-title">

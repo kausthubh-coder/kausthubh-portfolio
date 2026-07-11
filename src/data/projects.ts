@@ -15,6 +15,16 @@ export type Project = {
   status: string;
   tagline: string;
   summary: string;
+  previewLayout: "desktop-led" | "mobile-led";
+  previews: {
+    src: string;
+    alt: string;
+    title: string;
+    caption: string;
+    width: number;
+    height: number;
+    mobile?: boolean;
+  }[];
   facts: {
     label: string;
     value: string;
@@ -43,11 +53,47 @@ export const projects: Project[] = [
     logo: "/logos/optimized/studi-paper-airplane-logo-rounded.webp",
     alt: "Studi paper airplane logo",
     angle: -5,
-    description: "Personal agentic tutor.",
+    description: "Agentic AI tutor.",
     status: "actively building",
-    tagline: "an AI tutor that teaches you instead of doing your homework for you.",
+    tagline: "an AI tutor that teaches through questions, then builds the learning artifact you need.",
     summary:
-      "Studi is an agentic tutor built around Socratic chat. It asks you questions back, streams its thinking live, and when words aren't enough it builds the exact artifact you need — an interactive scene, a graph, a quiz — right inside the conversation.",
+      "Studi combines Socratic chat with generated learning tools. It keeps the conversation central, then opens an inspectable workspace when a concept needs code, a graph, a quiz, or an interactive scene.",
+    previewLayout: "desktop-led",
+    previews: [
+      {
+        src: "/projects/studi/01-chat-desktop.webp",
+        alt: "Studi tutor home screen with conversation history and a central message composer",
+        title: "the tutor",
+        caption: "A focused chat surface that keeps past threads close without crowding the current question.",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/projects/studi/02-code-spark-inline-desktop.webp",
+        alt: "Studi conversation with an inline Code Spark, terminal controls, and test results",
+        title: "inline Code Spark",
+        caption: "Generated code stays inside the lesson, with run controls and visible test results beside it.",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/projects/studi/03-code-spark-expanded-desktop.webp",
+        alt: "Expanded Studi Code Spark workspace with tutor context, editor, preview, and terminal",
+        title: "expanded workspace",
+        caption: "The same Spark can open into a larger workspace without losing the conversation that created it.",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/projects/studi/04-code-spark-mobile.webp",
+        alt: "Studi Code Spark workspace adapted to a mobile phone screen",
+        title: "mobile workspace",
+        caption: "The build-and-test loop remains usable when the workspace collapses to a phone.",
+        width: 390,
+        height: 844,
+        mobile: true,
+      },
+    ],
     facts: [
       { label: "status", value: "active build" },
       { label: "what it is", value: "agentic AI tutor" },
@@ -169,11 +215,50 @@ export const projects: Project[] = [
     logo: "/logos/optimized/amy-icon-cat-alt.webp",
     alt: "Amy app cat logo",
     angle: 4,
-    description: "Best open-source calorie tracker.",
+    description: "Open-source calorie tracker.",
     status: "exploratory",
-    tagline: "a calorie tracker with a personality, because logging food shouldn't feel like filing taxes.",
+    tagline: "a calorie tracker that turns plain language into a clean daily log.",
     summary:
-      "Amy is where I test softer, character-led interfaces: a cat with memory and moods sitting on top of a genuinely useful tracker. The bet is that personality makes a daily-use app stick where a spreadsheet with buttons doesn't.",
+      "Amy makes the daily loop deliberately small: say what you ate, review the nutrition estimate, and move on. Goals and onboarding stay calm, legible, and close to the data they change.",
+    previewLayout: "mobile-led",
+    previews: [
+      {
+        src: "/projects/amy/01-today.webp",
+        alt: "Amy calorie tracker Today screen with an empty daily food log",
+        title: "today",
+        caption: "A quiet daily dashboard that makes the next entry obvious without turning food into a spreadsheet.",
+        width: 412,
+        height: 915,
+        mobile: true,
+      },
+      {
+        src: "/projects/amy/02-ai-food-log.webp",
+        alt: "Amy calorie tracker showing a natural-language food entry converted into calories and macros",
+        title: "natural-language logging",
+        caption: "A short phrase becomes a reviewable calorie and macro estimate in the same screen.",
+        width: 412,
+        height: 915,
+        mobile: true,
+      },
+      {
+        src: "/projects/amy/03-settings-goals.webp",
+        alt: "Amy settings screen with calorie, protein, carbohydrate, and fat goals",
+        title: "goals",
+        caption: "Nutrition targets are editable in one place and reflected directly in the daily view.",
+        width: 412,
+        height: 915,
+        mobile: true,
+      },
+      {
+        src: "/projects/amy/04-onboarding-target.webp",
+        alt: "Amy onboarding screen for choosing a daily calorie target",
+        title: "onboarding",
+        caption: "The first-run flow asks only for the information needed to set a useful starting target.",
+        width: 412,
+        height: 915,
+        mobile: true,
+      },
+    ],
     facts: [
       { label: "status", value: "exploratory" },
       { label: "what it is", value: "character-led tracker" },
@@ -241,11 +326,47 @@ export const projects: Project[] = [
     logo: "/logos/kriyan-icon.svg",
     alt: "Kriyan icon",
     angle: -3,
-    description: "My take on personal AI agents.",
+    description: "Personal AI workspace.",
     status: "prototype lane",
-    tagline: "my take on personal AI agents — a repeatable path from rough thought to inspected artifact.",
+    tagline: "a personal AI workspace that turns scattered context into an inspectable plan for what to do next.",
     summary:
-      "Kriyan is where I run local AI workflow experiments: how prompts, tools, files, and preview loops become a practical building environment instead of a party trick. The product is the loop: plan, build, inspect, tighten.",
+      "Kriyan brings tasks, connected sources, and retained context into one local-first surface. The product is the loop: capture what matters, understand where it came from, and turn it into work you can inspect.",
+    previewLayout: "desktop-led",
+    previews: [
+      {
+        src: "/projects/kriyan/01-today-desktop.webp",
+        alt: "Kriyan Today dashboard showing current work, captured context, and a command composer",
+        title: "today",
+        caption: "Current work and captured context share one surface, with the next action always within reach.",
+        width: 1583,
+        height: 989,
+      },
+      {
+        src: "/projects/kriyan/02-sources-desktop.webp",
+        alt: "Kriyan Sources screen listing connected services and their sync status",
+        title: "sources",
+        caption: "Connections stay explicit: what is available, where it came from, and whether it is current.",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        src: "/projects/kriyan/03-memory-desktop.webp",
+        alt: "Kriyan Memory screen showing retained context and its supporting evidence",
+        title: "memory",
+        caption: "Retained context is presented as inspectable evidence rather than an invisible agent state.",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        src: "/projects/kriyan/04-today-mobile.webp",
+        alt: "Kriyan Today dashboard adapted to a mobile phone screen",
+        title: "mobile capture",
+        caption: "The mobile layout keeps capture and current work close when context arrives away from a desk.",
+        width: 462,
+        height: 1041,
+        mobile: true,
+      },
+    ],
     facts: [
       { label: "status", value: "prototype lane" },
       { label: "what it is", value: "local agent workflows" },
