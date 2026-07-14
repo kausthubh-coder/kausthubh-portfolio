@@ -1,82 +1,200 @@
 ---
+import * as simpleIcons from "simple-icons";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const tools = [
-  { name: "Astro", use: "static portfolio surfaces, fast pages, low JavaScript by default" },
-  { name: "React + Motion", use: "small islands where interaction needs state or choreographed animation" },
-  { name: "TypeScript", use: "typed project data, safer UI contracts, fewer mystery regressions" },
-  { name: "Bun", use: "quick local scripts, builds, and dependency work" },
-  { name: "AI agents", use: "planning, implementation loops, review passes, and browser verification" },
-  { name: "Design tools", use: "mockups, logo passes, font comparisons, and visual direction before code" },
+type Tool = {
+  name: string;
+  use: string;
+  icon?: string;
+  image?: string;
+  mark?: string;
+  href?: string;
+  accent: string;
+};
+
+const iconFor = (key?: string): { path: string } | null => {
+  if (!key) return null;
+  const icon = (simpleIcons as unknown as Record<string, { path: string } | undefined>)[key];
+  return icon ?? null;
+};
+
+const dailyTools: Tool[] = [
+  {
+    name: "Codex",
+    use: "the coding agent I use to plan, build, review, and verify",
+    image: "/tools/codex.svg",
+    href: "https://openai.com/codex/get-started/",
+    accent: "#10a37f",
+  },
+  {
+    name: "cmux",
+    use: "the terminal workspace where I keep parallel coding sessions moving",
+    image: "/tools/cmux.png",
+    href: "https://cmux.com/",
+    accent: "#3989f7",
+  },
+  {
+    name: "Cursor",
+    use: "my editor for quick code navigation and focused manual changes",
+    icon: "siCursor",
+    href: "https://cursor.com/",
+    accent: "#111111",
+  },
+  {
+    name: "Zen Browser",
+    use: "the browser I use for research, references, and everyday browsing",
+    icon: "siZenbrowser",
+    href: "https://zen-browser.app/",
+    accent: "#f76f53",
+  },
+  {
+    name: "Kriyan",
+    use: "my personal AI workspace for turning context into next actions",
+    image: "/logos/kriyan-icon.svg",
+    href: "https://github.com/kausthubh-coder/kriyan",
+    accent: "#6c6c6c",
+  },
+  {
+    name: "Oracle",
+    use: "my workflow skill for splitting work into build, review, and test lanes",
+    image: "/tools/oracle.svg",
+    href: "https://www.skills.sh/kausthubh-coder/oracle-skill/oracle",
+    accent: "#7c4dff",
+  },
 ];
 
-const loop = [
-  "Collect the rough taste first: screenshots, tiny sketches, and what feels wrong.",
-  "Make a static version fast so layout and copy can be judged in the browser.",
-  "Add motion only where it explains the object or makes the transition feel intentional.",
-  "Verify with builds, screenshots, mobile widths, and the boring performance checks.",
-  "Write down the decision so the next pass starts from evidence instead of vibes.",
-];
-
-const principles = [
-  "Static first",
-  "Motion with a job",
-  "Small tools over giant systems",
-  "Proof before confidence",
-  "Useful enough to ship",
+const appTools: Tool[] = [
+  {
+    name: "Convex",
+    use: "the reactive backend I use for data, jobs, and live product state",
+    icon: "siConvex",
+    href: "https://www.convex.dev/",
+    accent: "#ee342f",
+  },
+  {
+    name: "PostHog",
+    use: "analytics, session replay, and product feedback after shipping",
+    icon: "siPosthog",
+    href: "https://posthog.com/",
+    accent: "#f7a501",
+  },
+  {
+    name: "Next.js",
+    use: "the web framework I reach for when a product needs a real application layer",
+    icon: "siNextdotjs",
+    href: "https://nextjs.org/",
+    accent: "#111111",
+  },
+  {
+    name: "Tauri",
+    use: "the desktop shell I use when web UI needs native reach",
+    icon: "siTauri",
+    href: "https://tauri.app/",
+    accent: "#24c8d8",
+  },
+  {
+    name: "Vercel",
+    use: "deployments, previews, domains, and the shortest path from commit to production",
+    icon: "siVercel",
+    href: "https://vercel.com/",
+    accent: "#111111",
+  },
+  {
+    name: "Clerk",
+    use: "authentication and user management without rebuilding the basics",
+    icon: "siClerk",
+    href: "https://clerk.com/",
+    accent: "#6c47ff",
+  },
+  {
+    name: "Autumn",
+    use: "the billing layer that connects plans, usage, and entitlements to product logic",
+    image: "/tools/autumn.svg",
+    href: "https://www.useautumn.com/",
+    accent: "#8838ff",
+  },
 ];
 ---
 
-<BaseLayout title="Workflow | kausthubh" description="Kausthubh's tools, workflow, and AI-assisted build loop.">
-  <main class="detail-page workflow-page">
-    <a href="/" class="back-link">Back home</a>
+<BaseLayout title="Tools | kausthubh" description="The tools Kausthubh uses to think, build, and ship products.">
+  <main class="detail-page tools-page">
+    <a href="/" class="tools-back"><span aria-hidden="true">&larr;</span> home</a>
 
-    <section class="detail-hero detail-hero--workflow" aria-labelledby="workflow-title">
-      <p class="detail-kicker">workflow + tools</p>
-      <h1 id="workflow-title">The build loop is taste, speed, and proof.</h1>
-      <p>
-        I am trying to build practical things across full-stack, AI, robotics, and design. The workflow is simple:
-        get the idea visible, make it fast, test it honestly, and keep the parts that still feel alive.
-      </p>
-    </section>
-
-    <section class="workflow-strip" aria-label="Current principles">
-      {principles.map((principle) => <span>{principle}</span>)}
-    </section>
-
-    <section class="detail-grid" aria-labelledby="tools-title">
+    <header class="tools-intro">
+      <img src="/logo.webp" alt="" width="56" height="56" />
       <div>
-        <p class="detail-kicker">tools I reach for</p>
-        <h2 id="tools-title">Small stack, sharp edges.</h2>
+        <p class="tools-kicker">my setup</p>
+        <h1>tools</h1>
       </div>
-      <div class="tool-ledger">
+      <p>
+        The software, services, and systems I keep reaching for. This is the short version for now; I will add the
+        deeper why behind each choice as the stack changes.
+      </p>
+    </header>
+
+    <section class="tools-section" aria-labelledby="daily-tools-title">
+      <h2 id="daily-tools-title">what I use every day</h2>
+      <ul class="tools-list">
         {
-          tools.map((tool) => (
-            <article class="tool-row">
-              <h3>{tool.name}</h3>
-              <p>{tool.use}</p>
-            </article>
-          ))
+          dailyTools.map((tool) => {
+            const icon = iconFor(tool.icon);
+            return (
+              <li class="tools-item" style={`--tool-accent: ${tool.accent};`}>
+                <span class="tools-icon" aria-hidden="true">
+                  {tool.image ? (
+                    <img src={tool.image} alt="" width="38" height="38" loading="lazy" />
+                  ) : icon ? (
+                    <svg viewBox="0 0 24 24" role="presentation"><path d={icon.path} /></svg>
+                  ) : (
+                    <span class="tools-mark">{tool.mark}</span>
+                  )}
+                </span>
+                <div class="tools-copy">
+                  <h3>
+                    {tool.href ? <a href={tool.href} target="_blank" rel="noreferrer">{tool.name}</a> : tool.name}
+                  </h3>
+                  <p><span aria-hidden="true">&#8627;</span>{tool.use}</p>
+                </div>
+              </li>
+            );
+          })
         }
-      </div>
+      </ul>
     </section>
 
-    <section class="detail-grid" aria-labelledby="loop-title">
-      <div>
-        <p class="detail-kicker">how a pass works</p>
-        <h2 id="loop-title">From rough idea to something inspected.</h2>
-      </div>
-      <ol class="process-list">
-        {loop.map((step) => <li>{step}</li>)}
-      </ol>
+    <section class="tools-section" aria-labelledby="app-tools-title">
+      <h2 id="app-tools-title">what I build products with</h2>
+      <ul class="tools-list">
+        {
+          appTools.map((tool) => {
+            const icon = iconFor(tool.icon);
+            return (
+              <li class="tools-item" style={`--tool-accent: ${tool.accent};`}>
+                <span class="tools-icon" aria-hidden="true">
+                  {tool.image ? (
+                    <img src={tool.image} alt="" width="38" height="38" loading="lazy" />
+                  ) : icon ? (
+                    <svg viewBox="0 0 24 24" role="presentation"><path d={icon.path} /></svg>
+                  ) : (
+                    <span class="tools-mark">{tool.mark}</span>
+                  )}
+                </span>
+                <div class="tools-copy">
+                  <h3>
+                    {tool.href ? <a href={tool.href} target="_blank" rel="noreferrer">{tool.name}</a> : tool.name}
+                  </h3>
+                  <p><span aria-hidden="true">&#8627;</span>{tool.use}</p>
+                </div>
+              </li>
+            );
+          })
+        }
+      </ul>
     </section>
 
-    <section class="detail-note" aria-labelledby="edge-title">
-      <h2 id="edge-title">What I am pushing toward</h2>
-      <p>
-        I want the work to compound: better interfaces, stronger systems, enough robotics and AI depth to build real
-        products, and enough discipline outside the screen to take care of myself and my family.
-      </p>
-    </section>
+    <footer class="tools-footer">
+      <span>still changing, still shipping.</span>
+      <a href="mailto:kausthubh2007@gmail.com">tell me what I am missing</a>
+    </footer>
   </main>
 </BaseLayout>
