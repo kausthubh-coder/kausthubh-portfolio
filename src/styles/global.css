@@ -1009,6 +1009,7 @@ svg {
 
   .pd-preview__grid {
     display: flex;
+    align-items: flex-start;
     gap: 14px;
     margin: 22px -18px 0;
     overflow-x: auto;
@@ -1028,6 +1029,11 @@ svg {
     width: min(82vw, 340px);
     flex: 0 0 min(82vw, 340px);
     scroll-snap-align: start;
+  }
+
+  .pd-preview--desktop-led .pd-preview__item.pd-preview__item--mobile {
+    width: min(52vw, 220px);
+    flex-basis: min(52vw, 220px);
   }
 
   .pd-hero__logo {

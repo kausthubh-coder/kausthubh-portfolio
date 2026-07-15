@@ -30,8 +30,20 @@
     const fallbackIdentityWidth = 360;
     const easeOut = "cubic-bezier(0.16, 1, 0.3, 1)";
     const timers = [];
+    let activePhase = "stack";
+    let viewportFrame = 0;
+
+    const visualViewport = window.visualViewport;
+
+    const removeViewportListeners = () => {
+      window.removeEventListener("resize", keepCentered);
+      visualViewport?.removeEventListener("resize", keepCentered);
+      visualViewport?.removeEventListener("scroll", keepCentered);
+      window.cancelAnimationFrame(viewportFrame);
+    };
 
     const finish = () => {
+      removeViewportListeners();
       shell.remove();
       doc.dataset.introState = "done";
       delete doc.dataset.introReady;
@@ -51,14 +63,18 @@
       const identityWidth = Math.round(
         targetRect && nameRect ? nameRect.right - targetRect.left : fallbackIdentityWidth,
       );
+      const viewportLeft = visualViewport?.offsetLeft || 0;
+      const viewportTop = visualViewport?.offsetTop || 0;
+      const viewportWidth = visualViewport?.width || window.innerWidth;
+      const viewportHeight = visualViewport?.height || window.innerHeight;
 
       return {
-        centerX: Math.round(window.innerWidth / 2),
-        centerY: Math.round(window.innerHeight / 2),
+        centerX: Math.round(viewportLeft + viewportWidth / 2),
+        centerY: Math.round(viewportTop + viewportHeight / 2),
         logoSize,
         identityWidth,
-        targetX: Math.round(targetRect?.left || window.innerWidth / 2 - logoSize / 2),
-        targetY: Math.round(targetRect?.top || window.innerHeight / 2 - logoSize / 2),
+        targetX: Math.round(targetRect?.left || viewportLeft + (viewportWidth - logoSize) / 2),
+        targetY: Math.round(targetRect?.top || viewportTop + (viewportHeight - logoSize) / 2),
       };
     };
 
@@ -69,6 +85,7 @@
     };
 
     const place = (phase, immediate = false) => {
+      activePhase = phase;
       const metrics = measure();
       const scale = scaleFor(phase);
       const visualWidth = phase === "word" ? metrics.identityWidth : metrics.logoSize;
@@ -81,8 +98,17 @@
       flight.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
     };
 
+    function keepCentered() {
+      window.cancelAnimationFrame(viewportFrame);
+      viewportFrame = window.requestAnimationFrame(() => place(activePhase, true));
+    }
+
     place("stack", true);
     shell.dataset.ready = "true";
+
+    window.addEventListener("resize", keepCentered, { passive: true });
+    visualViewport?.addEventListener("resize", keepCentered, { passive: true });
+    visualViewport?.addEventListener("scroll", keepCentered, { passive: true });
 
     timers.push(window.setTimeout(() => place("word"), 900));
     timers.push(window.setTimeout(() => place("land"), 1420));
