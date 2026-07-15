@@ -12,8 +12,7 @@
       />
     </div>
     <span class="intro-word-run">
-      <span class="intro-name-tail">Kausthubh.</span>
-      <span class="intro-word-n">N</span>
+      <span class="intro-name-tail">Kausthubh.N</span>
     </span>
   </div>
 </div>
@@ -28,7 +27,8 @@
     const phases = ["stack", "word", "land"];
     const fallbackLogoSize = 72;
     const fallbackIdentityWidth = 360;
-    const easeOut = "cubic-bezier(0.16, 1, 0.3, 1)";
+    const revealEase = "cubic-bezier(0.4, 0, 0.2, 1)";
+    const landingEase = "cubic-bezier(0.65, 0, 0.35, 1)";
     const timers = [];
     let activePhase = "stack";
     let viewportFrame = 0;
@@ -42,15 +42,21 @@
       window.cancelAnimationFrame(viewportFrame);
     };
 
-    const finish = () => {
+    const finish = (immediate = false) => {
       removeViewportListeners();
-      shell.remove();
       doc.dataset.introState = "done";
       delete doc.dataset.introReady;
+
+      if (immediate) {
+        shell.remove();
+        return;
+      }
+
+      timers.push(window.setTimeout(() => shell.remove(), 160));
     };
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      finish();
+      finish(true);
       return;
     }
 
@@ -79,8 +85,7 @@
     };
 
     const scaleFor = (phase) => {
-      if (phase === "stack") return 1.56;
-      if (phase === "word") return 1.04;
+      if (phase === "stack") return 1.48;
       return 1;
     };
 
@@ -93,8 +98,8 @@
       const y = phase === "land" ? metrics.targetY : Math.round(metrics.centerY - (metrics.logoSize * scale) / 2);
 
       phases.forEach((name) => shell.classList.toggle(`intro-shell--${name}`, name === phase));
-      flight.style.transitionDuration = immediate ? "0ms" : phase === "land" ? "480ms" : "280ms";
-      flight.style.transitionTimingFunction = easeOut;
+      flight.style.transitionDuration = immediate ? "0ms" : phase === "land" ? "820ms" : "700ms";
+      flight.style.transitionTimingFunction = phase === "land" ? landingEase : revealEase;
       flight.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
     };
 
@@ -110,8 +115,16 @@
     visualViewport?.addEventListener("resize", keepCentered, { passive: true });
     visualViewport?.addEventListener("scroll", keepCentered, { passive: true });
 
-    timers.push(window.setTimeout(() => place("word"), 900));
-    timers.push(window.setTimeout(() => place("land"), 1420));
-    timers.push(window.setTimeout(finish, 1840));
+    const revealWordmark = () => {
+      const fontsReady = document.fonts?.ready || Promise.resolve();
+      fontsReady.then(() => {
+        if (!shell.isConnected) return;
+        place("word");
+        timers.push(window.setTimeout(() => place("land"), 1060));
+        timers.push(window.setTimeout(finish, 2060));
+      });
+    };
+
+    timers.push(window.setTimeout(revealWordmark, 900));
   })();
 </script>

@@ -1659,6 +1659,7 @@ svg {
   place-items: center;
   background: var(--bg);
   color: var(--ink);
+  overflow: clip;
   pointer-events: none;
   transition:
     background 520ms var(--ease-out),
@@ -1699,6 +1700,7 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
 
 .intro-piece-stage {
   position: relative;
+  z-index: 2;
   width: var(--intro-logo-size);
   height: var(--intro-logo-size);
   flex: 0 0 var(--intro-logo-size);
@@ -1713,10 +1715,10 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
   object-fit: contain;
   backface-visibility: hidden;
   opacity: 0;
-  transform: scale(0.62);
+  transform: scale(0.72);
   transition:
-    opacity 120ms var(--ease-out),
-    transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 160ms var(--ease-out),
+    transform 460ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -1727,28 +1729,25 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
 
 .intro-shell--word .intro-start-logo,
 .intro-shell--land .intro-start-logo {
-  transform: scale(0.98);
+  transform: scale(1);
 }
 
 .intro-word-run {
   position: absolute;
+  z-index: 1;
   top: 50%;
   left: calc(var(--intro-logo-size) + var(--intro-gap));
   display: inline-flex;
   align-items: baseline;
   line-height: 1;
   pointer-events: none;
-  opacity: 0;
-  transform: translate(-10px, -50%);
-  transition:
-    opacity 340ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  transform: translate(calc(-1 * (var(--intro-logo-size) + var(--intro-gap))), -50%);
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .intro-shell--word .intro-word-run,
 .intro-shell--land .intro-word-run {
-  opacity: 1;
   transform: translate(0, -50%);
 }
 
@@ -1757,15 +1756,15 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
   overflow: hidden;
   font-size: var(--intro-name-size);
   font-weight: 760;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   line-height: 1;
   white-space: nowrap;
   opacity: 0;
   clip-path: inset(0 100% 0 0);
   transform-origin: left center;
   transition:
-    clip-path 460ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 340ms cubic-bezier(0.16, 1, 0.3, 1);
+    clip-path 680ms cubic-bezier(0.4, 0, 0.2, 1) 60ms,
+    opacity 220ms var(--ease-out) 80ms;
   will-change: clip-path, transform;
 }
 
@@ -1773,26 +1772,6 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
 .intro-shell--land .intro-name-tail {
   opacity: 1;
   clip-path: inset(0 0 0 0);
-}
-
-.intro-word-n {
-  display: inline-block;
-  margin-left: 0.02em;
-  font-size: var(--intro-name-size);
-  font-weight: 760;
-  letter-spacing: -0.025em;
-  line-height: 1;
-  opacity: 0;
-  transform: translateX(-5px);
-  transition:
-    opacity 260ms var(--ease-out) 80ms,
-    transform 260ms var(--ease-out) 80ms;
-}
-
-.intro-shell--word .intro-word-n,
-.intro-shell--land .intro-word-n {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 @media (max-width: 760px) {
