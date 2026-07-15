@@ -84,15 +84,6 @@ export const projects: Project[] = [
         width: 1280,
         height: 720,
       },
-      {
-        src: "/projects/studi/04-code-spark-mobile.webp",
-        alt: "Studi Code Spark workspace adapted to a mobile phone screen",
-        title: "mobile workspace",
-        caption: "The build-and-test loop remains usable when the workspace collapses to a phone.",
-        width: 390,
-        height: 844,
-        mobile: true,
-      },
     ],
     facts: [
       { label: "status", value: "active build" },
@@ -107,19 +98,9 @@ export const projects: Project[] = [
         why: "app router + streaming server components fit a tutor that talks in real time, and I know it cold.",
       },
       {
-        name: "React 19",
-        icon: "siReact",
-        why: "the ecosystem I move fastest in — suspense and transitions do real work in a streaming chat UI.",
-      },
-      {
-        name: "TypeScript",
-        icon: "siTypescript",
-        why: "typed end to end from schema to component. refactors stay boring, which is the point.",
-      },
-      {
         name: "Convex",
         icon: "siConvex",
-        why: "reactive database + backend in one. live subscriptions make the streaming tutor feel alive for free.",
+        why: "the whole database and backend are typed end to end, and all of it lives in one folder.",
       },
       {
         name: "Convex Agent",
@@ -129,7 +110,7 @@ export const projects: Project[] = [
       {
         name: "Clerk",
         icon: "siClerk",
-        why: "auth + billing + subscription state without building any of it myself. shipped in a day.",
+        why: "auth + billing + subscription state without rebuilding the basics, and it integrates cleanly with Convex.",
       },
       {
         name: "OpenRouter",
@@ -139,7 +120,7 @@ export const projects: Project[] = [
       {
         name: "Bun",
         icon: "siBun",
-        why: "installs and scripts fast enough that I never think about the toolchain. that's all I want from it.",
+        why: "fast installs and scripts, plus a runtime, package manager, test runner, and bundler in one tool.",
       },
       {
         name: "Vitest + Playwright",
@@ -174,8 +155,8 @@ export const projects: Project[] = [
         body: "Drop in a problem set, a lecture slide, or a photo of your notebook and the tutor works from your actual material.",
       },
       {
-        title: "quotas, billing, waitlist",
-        body: "Real product plumbing: usage tracking per plan, Clerk-synced subscriptions, and an early-access waitlist with handoff. Not a demo — a product.",
+        title: "quotas + billing",
+        body: "Real product plumbing: usage tracking per plan, Clerk-synced subscriptions, and billing state that follows the user through the app.",
       },
     ],
     architecture: [
@@ -193,14 +174,14 @@ export const projects: Project[] = [
       },
       {
         title: "product plumbing",
-        body: "Clerk handles auth and subscription state; Convex tracks threads, messages, uploads, usage, billing sync, telemetry, and waitlist handoff.",
+        body: "Clerk handles auth and subscription state; Convex tracks threads, messages, uploads, usage, billing sync, and telemetry.",
       },
     ],
     links: [
       {
         label: "live site",
-        href: "https://studi-qypn.vercel.app/",
-        note: "early-access landing page",
+        href: "https://www.getstudi.com/",
+        note: "getstudi.com",
       },
       {
         label: "GitHub",
@@ -356,15 +337,6 @@ export const projects: Project[] = [
         caption: "Retained context is presented as inspectable evidence rather than an invisible agent state.",
         width: 1600,
         height: 1000,
-      },
-      {
-        src: "/projects/kriyan/04-today-mobile.webp",
-        alt: "Kriyan Today dashboard adapted to a mobile phone screen",
-        title: "mobile capture",
-        caption: "The mobile layout keeps capture and current work close when context arrives away from a desk.",
-        width: 462,
-        height: 1041,
-        mobile: true,
       },
     ],
     facts: [
