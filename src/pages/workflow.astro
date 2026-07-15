@@ -125,14 +125,14 @@ const appTools: Tool[] = [
       </p>
     </header>
 
-    <section class="tools-section" aria-labelledby="daily-tools-title">
+    <section class="tools-section tools-section--daily" aria-labelledby="daily-tools-title">
       <h2 id="daily-tools-title">what I use every day</h2>
       <ul class="tools-list">
         {
-          dailyTools.map((tool) => {
+          dailyTools.map((tool, index) => {
             const icon = iconFor(tool.icon);
             return (
-              <li class="tools-item" style={`--tool-accent: ${tool.accent};`}>
+              <li class="tools-item" style={`--tool-accent: ${tool.accent}; --tool-index: ${index};`}>
                 <span class="tools-icon" aria-hidden="true">
                   {tool.image ? (
                     <img src={tool.image} alt="" width="38" height="38" loading="lazy" />
@@ -155,14 +155,17 @@ const appTools: Tool[] = [
       </ul>
     </section>
 
-    <section class="tools-section" aria-labelledby="app-tools-title">
+    <section class="tools-section tools-section--apps" aria-labelledby="app-tools-title">
       <h2 id="app-tools-title">what I build products with</h2>
       <ul class="tools-list">
         {
-          appTools.map((tool) => {
+          appTools.map((tool, index) => {
             const icon = iconFor(tool.icon);
             return (
-              <li class="tools-item" style={`--tool-accent: ${tool.accent};`}>
+              <li
+                class="tools-item"
+                style={`--tool-accent: ${tool.accent}; --tool-index: ${index + dailyTools.length};`}
+              >
                 <span class="tools-icon" aria-hidden="true">
                   {tool.image ? (
                     <img src={tool.image} alt="" width="38" height="38" loading="lazy" />

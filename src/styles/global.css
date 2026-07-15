@@ -1364,6 +1364,7 @@ svg {
   color: var(--muted);
   font-size: 0.9rem;
   font-weight: 620;
+  animation: tools-rise-in 360ms var(--ease-out) both;
   transition: color 160ms var(--ease-out);
 }
 
@@ -1383,6 +1384,12 @@ svg {
 .tools-intro > img {
   width: 56px;
   height: 56px;
+  transform-origin: center;
+  animation: tools-mark-in 560ms var(--ease-out) both;
+}
+
+.tools-intro > div {
+  animation: tools-rise-in 460ms 60ms var(--ease-out) both;
 }
 
 .tools-intro h1,
@@ -1415,6 +1422,7 @@ svg {
   font-size: clamp(1rem, 2vw, 1.08rem);
   line-height: 1.72;
   text-wrap: pretty;
+  animation: tools-rise-in 460ms 120ms var(--ease-out) both;
 }
 
 .tools-section {
@@ -1425,6 +1433,15 @@ svg {
   font-size: clamp(1.35rem, 3vw, 1.7rem);
   font-weight: 700;
   line-height: 1.2;
+  animation: tools-rise-in 460ms var(--ease-out) both;
+}
+
+.tools-section--daily h2 {
+  animation-delay: 180ms;
+}
+
+.tools-section--apps h2 {
+  animation-delay: 480ms;
 }
 
 .tools-list {
@@ -1440,6 +1457,7 @@ svg {
   grid-template-columns: 42px minmax(0, 1fr);
   align-items: start;
   gap: 14px;
+  animation: tools-rise-in 460ms calc(240ms + (var(--tool-index) * 45ms)) var(--ease-out) both;
 }
 
 .tools-icon {
@@ -1451,6 +1469,8 @@ svg {
   border-radius: 9px;
   background: color-mix(in oklab, var(--tool-accent) 10%, white);
   color: var(--tool-accent);
+  transform-origin: center;
+  animation: tools-icon-in 500ms calc(280ms + (var(--tool-index) * 45ms)) var(--ease-out) both;
 }
 
 .tools-icon svg {
@@ -1520,6 +1540,7 @@ svg {
   color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.5;
+  animation: tools-rise-in 460ms 880ms var(--ease-out) both;
 }
 
 .tools-footer a {
@@ -1532,6 +1553,47 @@ svg {
 .tools-footer a:hover,
 .tools-footer a:focus-visible {
   text-decoration-color: var(--ink);
+}
+
+@keyframes tools-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tools-mark-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) rotate(-4deg) scale(0.82);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0) scale(1);
+  }
+}
+
+@keyframes tools-icon-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.72) rotate(-5deg);
+  }
+
+  72% {
+    opacity: 1;
+    transform: scale(1.06) rotate(1deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
 }
 
 @media (max-width: 620px) {
@@ -1560,6 +1622,19 @@ svg {
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tools-back,
+  .tools-intro > img,
+  .tools-intro > div,
+  .tools-intro > p,
+  .tools-section h2,
+  .tools-item,
+  .tools-icon,
+  .tools-footer {
+    animation: none;
   }
 }
 
