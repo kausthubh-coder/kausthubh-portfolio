@@ -135,46 +135,54 @@ export const projects: Project[] = [
     ],
     features: [
       {
-        title: "socratic chat",
-        body: "Studi answers questions with questions when that's what teaching requires. It pushes you to work the idea instead of just reading a summary of it.",
+        title: "guided discovery, not answer dumping",
+        body: "Studi asks one focused question at a time, adapts to what you say, and introduces the formal name only after you have found the idea yourself.",
       },
       {
-        title: "live streaming replies",
-        body: "Assistant responses stream token-by-token through Convex subscriptions, so a session feels like a conversation, not a request queue.",
+        title: "Sparks that fit the learning moment",
+        body: "When text is not enough, the tutor can build an interactive scene, Desmos graph, quiz, or flash-card deck around the exact concept in the conversation.",
       },
       {
-        title: "Sparks — generated learning artifacts",
-        body: "When words stop working, Studi generates the right artifact inline: sandboxed HTML/CSS/JS scenes, Desmos graphs, quizzes, and flashcard decks scoped to the exact concept in the thread.",
+        title: "runnable code practice inside the lesson",
+        body: "Code and Test Sparks turn a concept into a small TypeScript, JavaScript, or Python workspace. You can predict, run, inspect the output, and repair visible failing checks without leaving the thread.",
       },
       {
-        title: "multi-thread sessions",
-        body: "Every topic gets its own thread with full history, so you can run calculus in one lane and chemistry in another without the tutor losing the plot.",
+        title: "threads that keep their context",
+        body: "Each topic keeps its messages, attachments, and generated Sparks together, so you can return to a lesson without rebuilding the context from scratch.",
       },
       {
-        title: "file + image attachments",
-        body: "Drop in a problem set, a lecture slide, or a photo of your notebook and the tutor works from your actual material.",
+        title: "works from your actual material",
+        body: "Attach a problem set, lecture slide, or photo of your notes and Studi uses that material as the starting point instead of teaching from a generic prompt.",
       },
       {
-        title: "quotas + billing",
-        body: "Real product plumbing: usage tracking per plan, Clerk-synced subscriptions, and billing state that follows the user through the app.",
+        title: "built as a real product",
+        body: "Accounts, plan-based usage, billing state, file storage, and failure recovery are part of the same experience, not a demo layer added around the tutor.",
       },
     ],
     architecture: [
       {
-        title: "streaming tutor pipeline",
-        body: "User messages persist through Convex mutations, assistant work is scheduled through backend actions, and the frontend subscribes to streamed UI messages. The session feels live because it literally is.",
+        title: "one Spark tool, not six separate tools",
+        body: "The tutor calls one generic create_spark tool with a Spark type and learning context. A typed skill catalog supplies the right prompt, schema, and validator for scenes, graphs, code, tests, quizzes, and flash cards, so adding a new Spark does not require rewiring the agent.",
       },
       {
-        title: "generated Sparks",
-        body: "Artifacts render in a sandboxed boundary so generated HTML/CSS/JS can be interactive without being trusted. Each Spark is scoped to the conversation that created it.",
+        title: "structured generation before rendering",
+        body: "A separate worker generates strict structured output, then Studi normalizes and validates it against the Spark contract before anything is stored or shown. Generated code never becomes trusted UI just because a model returned it.",
       },
       {
-        title: "agent and model boundary",
-        body: "One Studi Convex Agent owns tutor behavior and tool wiring; OpenRouter owns model access. Model routing stays swappable without touching product UI.",
+        title: "sandboxed interactive scenes",
+        body: "Scene Sparks run as compact HTML, CSS, and JavaScript inside a restricted iframe with a CSP and no network access. A small runtime bridge reports readiness, size, interactions, checkpoints, and errors back to Studi without giving the scene access to the app.",
       },
       {
-        title: "product plumbing",
-        body: "Clerk handles auth and subscription state; Convex tracks threads, messages, uploads, usage, billing sync, and telemetry.",
+        title: "isolated code execution with limits",
+        body: "Code and Test Sparks are admitted server-side, checked against plan limits, and run in isolated provider-backed workspaces with bounded files, commands, languages, and timeouts. The learner sees useful output without exposing production infrastructure.",
+      },
+      {
+        title: "a persistent, streaming tutor",
+        body: "Convex Agent owns the thread, messages, tool calls, and tutor behavior. Replies stream into the same persisted conversation through live subscriptions, while Clerk identity and usage state stay enforced on the backend.",
+      },
+      {
+        title: "models are infrastructure, not product logic",
+        body: "Tutor replies and Spark workers use task-specific model routes with guarded fallbacks. Providers can change without rewriting the chat UI, artifact contracts, or the teaching flow.",
       },
     ],
     links: [
