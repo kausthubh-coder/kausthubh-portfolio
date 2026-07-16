@@ -1,13 +1,21 @@
 ---
 import { projects } from "../data/projects";
+
+const fanProjects = projects.map((project) => ({
+  name: project.name,
+  slug: project.slug,
+  logo: project.logo,
+  description: project.description,
+}));
 ---
 
-<div class="project-stack" aria-label="Favorite projects">
+<div class="project-stack project-stack--desktop" aria-label="Favorite projects">
   {
     projects.map((project, index) => (
       <a
         class="project-stack__item"
         href={`/projects/${project.slug}/`}
+        data-astro-prefetch="load"
         aria-label={`${project.name}: ${project.description}`}
         style={`--project-index: ${index}; --project-tilt: ${project.angle}deg;`}
       >
@@ -31,3 +39,296 @@ import { projects } from "../data/projects";
     ))
   }
 </div>
+
+<div
+  class="project-fan"
+  data-project-fan
+  tabindex="0"
+  aria-label="Favorite projects. Tap a project to select it, then tap it again to open. Use the arrow keys or swipe to browse."
+>
+  <span class="project-fan__word" data-project-fan-word aria-hidden="true">{fanProjects[0].name}</span>
+
+  <div class="project-fan__stage" data-project-fan-gesture>
+    <div class="project-fan__marks" role="group" aria-label="Choose a project">
+      {
+        fanProjects.map((project, index) => (
+          <button
+            class:list={["project-fan__mark", { "is-active": index === 0 }]}
+            type="button"
+            data-project-fan-mark
+            data-index={index}
+            data-offset={index === 0 ? "0" : index === 1 ? "1" : "-1"}
+            aria-label={index === 0 ? `Open ${project.name}` : `Show ${project.name}`}
+            aria-pressed={index === 0 ? "true" : "false"}
+          >
+            <img
+              src={project.logo}
+              alt=""
+              width="112"
+              height="112"
+              loading="eager"
+              decoding="async"
+              style={index === 0 ? `view-transition-name: project-logo-${project.slug};` : undefined}
+            />
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="project-fan__copy" data-project-fan-copy aria-live="polite">
+      <strong data-project-fan-name>{fanProjects[0].name}</strong>
+      <span data-project-fan-description>{fanProjects[0].description}</span>
+      <a data-project-fan-link href={`/projects/${fanProjects[0].slug}/`} data-astro-prefetch="tap" hidden></a>
+    </div>
+  </div>
+
+</div>
+
+<script is:inline define:vars={{ fanProjects }}>
+  (() => {
+    const fan = document.querySelector("[data-project-fan]");
+    if (!fan) return;
+
+    const marks = [...fan.querySelectorAll("[data-project-fan-mark]")];
+    const word = fan.querySelector("[data-project-fan-word]");
+    const name = fan.querySelector("[data-project-fan-name]");
+    const description = fan.querySelector("[data-project-fan-description]");
+    const link = fan.querySelector("[data-project-fan-link]");
+    const copy = fan.querySelector("[data-project-fan-copy]");
+    const gesture = fan.querySelector("[data-project-fan-gesture]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let active = 0;
+    let pointerStart = null;
+    let didSwipe = false;
+
+    const wrap = (value) => (value + fanProjects.length) % fanProjects.length;
+
+    const setActive = (next) => {
+      active = wrap(next);
+      const project = fanProjects[active];
+
+      marks.forEach((mark, index) => {
+        let offset = index - active;
+        if (offset > 1) offset -= fanProjects.length;
+        if (offset < -1) offset += fanProjects.length;
+
+        const selected = index === active;
+        const image = mark.querySelector("img");
+        mark.dataset.offset = String(offset);
+        mark.classList.toggle("is-active", selected);
+        mark.setAttribute("aria-pressed", String(selected));
+        mark.setAttribute("aria-label", `${selected ? "Open" : "Show"} ${fanProjects[index].name}`);
+        image.style.viewTransitionName = selected ? `project-logo-${fanProjects[index].slug}` : "none";
+      });
+
+      word.textContent = project.name;
+      name.textContent = project.name;
+      description.textContent = project.description;
+      link.href = `/projects/${project.slug}/`;
+      link.setAttribute("aria-label", `Open ${project.name}`);
+
+      copy.classList.remove("is-entering");
+      if (!reducedMotion.matches) requestAnimationFrame(() => copy.classList.add("is-entering"));
+    };
+
+    marks.forEach((mark, index) => {
+      mark.addEventListener("click", () => {
+        if (didSwipe) {
+          didSwipe = false;
+          return;
+        }
+        if (index === active) {
+          window.location.assign(link.href);
+          return;
+        }
+        setActive(index);
+      });
+    });
+
+    fan.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setActive(active - 1);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setActive(active + 1);
+      }
+    });
+
+    gesture.addEventListener("pointerdown", (event) => {
+      pointerStart = event.clientX;
+      didSwipe = false;
+      gesture.setPointerCapture?.(event.pointerId);
+    });
+    gesture.addEventListener("pointermove", (event) => {
+      if (pointerStart === null) return;
+      didSwipe = Math.abs(event.clientX - pointerStart) > 34;
+    });
+    gesture.addEventListener("pointerup", (event) => {
+      if (pointerStart === null) return;
+      const distance = event.clientX - pointerStart;
+      pointerStart = null;
+      didSwipe = Math.abs(distance) > 34;
+      if (didSwipe) setActive(active + (distance < 0 ? 1 : -1));
+      window.setTimeout(() => {
+        didSwipe = false;
+      }, 0);
+    });
+    gesture.addEventListener("pointercancel", () => {
+      pointerStart = null;
+      didSwipe = false;
+    });
+  })();
+</script>
+
+<style>
+  .project-fan {
+    display: none;
+  }
+
+  @media (max-width: 620px) {
+    .project-stack--desktop {
+      display: none;
+    }
+
+    .project-fan {
+      --fan-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      width: min(100%, 360px);
+      height: 340px;
+      position: relative;
+      display: block;
+      overflow: hidden;
+      contain: layout paint;
+      text-align: left;
+      touch-action: pan-y;
+    }
+
+    .project-fan__word {
+      position: absolute;
+      top: 34px;
+      left: 50%;
+      color: var(--surface);
+      font-size: clamp(4.8rem, 23vw, 6.3rem);
+      font-weight: 760;
+      line-height: 0.8;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    .project-fan__stage {
+      height: 340px;
+      position: relative;
+      display: grid;
+      grid-template-rows: 206px 1fr;
+      cursor: grab;
+    }
+
+    .project-fan__stage:active {
+      cursor: grabbing;
+    }
+
+    .project-fan__marks {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .project-fan__mark {
+      width: 112px;
+      height: 112px;
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 0;
+      border-radius: 28px;
+      background: transparent;
+      padding: 0;
+      opacity: 0.46;
+      filter: grayscale(1);
+      transform: translate3d(-50%, -50%, 0);
+      transition:
+        transform 560ms var(--fan-ease),
+        opacity 300ms var(--fan-ease),
+        filter 300ms var(--fan-ease);
+      will-change: transform;
+    }
+
+    .project-fan__mark img {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .project-fan__mark[data-offset="-1"] {
+      z-index: 1;
+      transform: translate3d(calc(-50% - 82px), calc(-50% + 18px), 0) rotate(-12deg) scale(0.72);
+    }
+
+    .project-fan__mark[data-offset="1"] {
+      z-index: 2;
+      transform: translate3d(calc(-50% + 82px), calc(-50% + 16px), 0) rotate(10deg) scale(0.76);
+    }
+
+    .project-fan__mark[data-offset="0"] {
+      z-index: 4;
+      opacity: 1;
+      filter: grayscale(0);
+      transform: translate3d(-50%, calc(-50% - 8px), 0) rotate(0) scale(1.08);
+    }
+
+    .project-fan__mark:focus-visible {
+      z-index: 6;
+      outline-offset: 5px;
+    }
+
+    .project-fan__copy {
+      z-index: 5;
+      display: grid;
+      justify-items: center;
+      align-content: start;
+      padding: 0 18px 20px;
+      text-align: center;
+    }
+
+    .project-fan__copy.is-entering {
+      animation: project-fan-copy 420ms var(--fan-ease) both;
+    }
+
+    .project-fan__copy strong {
+      font-size: 1.65rem;
+      font-weight: 650;
+      line-height: 1;
+    }
+
+    .project-fan__copy > span {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+  }
+
+  @keyframes project-fan-copy {
+    from {
+      opacity: 0;
+      filter: blur(4px);
+      transform: translateY(8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-fan__mark {
+      transition: none;
+      will-change: auto;
+    }
+
+    .project-fan__copy.is-entering {
+      animation: none;
+    }
+  }
+</style>

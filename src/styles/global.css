@@ -1632,7 +1632,6 @@ svg {
   place-items: center;
   background: var(--bg);
   color: var(--ink);
-  overflow: clip;
   pointer-events: none;
   transition:
     background 520ms var(--ease-out),
@@ -1643,6 +1642,7 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
   display: grid;
 }
 
+.intro-shell--logo,
 .intro-shell--word {
   background: var(--bg);
   color: var(--ink);
@@ -1677,7 +1677,7 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
   width: var(--intro-logo-size);
   height: var(--intro-logo-size);
   flex: 0 0 var(--intro-logo-size);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .intro-start-logo {
@@ -1690,12 +1690,12 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
   opacity: 0;
   transform: scale(0.72);
   transition:
-    opacity 160ms var(--ease-out),
-    transform 460ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 260ms var(--ease-out),
+    transform 500ms cubic-bezier(0.22, 1.22, 0.36, 1);
   will-change: opacity, transform;
 }
 
-.intro-shell[data-ready="true"] .intro-start-logo {
+.intro-piece-stage[data-step="logo"] .intro-start-logo {
   opacity: 1;
   transform: scale(1);
 }
@@ -1712,39 +1712,28 @@ html[data-intro-ready="true"] .intro-shell[data-ready="true"] {
   left: calc(var(--intro-logo-size) + var(--intro-gap));
   display: inline-flex;
   align-items: baseline;
+  overflow: hidden;
+  font-size: var(--intro-name-size);
+  font-weight: 760;
+  letter-spacing: -0.025em;
   line-height: 1;
+  white-space: nowrap;
   pointer-events: none;
-  transform: translate(calc(-1 * (var(--intro-logo-size) + var(--intro-gap))), -50%);
-  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transform: translate(-26px, -50%);
+  transition:
+    clip-path 560ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 420ms cubic-bezier(0.16, 1, 0.3, 1) 60ms,
+    transform 560ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: clip-path, opacity, transform;
 }
 
 .intro-shell--word .intro-word-run,
 .intro-shell--land .intro-word-run {
-  transform: translate(0, -50%);
-}
-
-.intro-name-tail {
-  display: inline-block;
-  overflow: hidden;
-  font-size: var(--intro-name-size);
-  font-weight: 760;
-  letter-spacing: 0;
-  line-height: 1;
-  white-space: nowrap;
-  opacity: 0;
-  clip-path: inset(0 100% 0 0);
-  transform-origin: left center;
-  transition:
-    clip-path 680ms cubic-bezier(0.4, 0, 0.2, 1) 60ms,
-    opacity 220ms var(--ease-out) 80ms;
-  will-change: clip-path, transform;
-}
-
-.intro-shell--word .intro-name-tail,
-.intro-shell--land .intro-name-tail {
   opacity: 1;
   clip-path: inset(0 0 0 0);
+  transform: translate(0, -50%);
 }
 
 @media (max-width: 760px) {
@@ -2102,6 +2091,10 @@ html[data-intro-state="done"] .resource-rows {
     color 180ms var(--ease-out);
 }
 
+.project-hint__mobile {
+  display: none !important;
+}
+
 .section-heading:hover .project-hint span,
 .section-heading:focus-within .project-hint span,
 .projects-row:hover .project-hint span,
@@ -2457,6 +2450,17 @@ html[data-intro-state="done"] .resource-rows {
     text-align: center;
     gap: 18px;
     margin-top: 34px;
+  }
+
+  .project-hint__desktop {
+    display: none !important;
+  }
+
+  .project-hint .project-hint__mobile {
+    display: inline-block !important;
+    color: var(--muted);
+    opacity: 1;
+    transform: none;
   }
 
   .mockup-panel .project-stack {

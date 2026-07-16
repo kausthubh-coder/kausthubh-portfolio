@@ -55,15 +55,20 @@ const phoneHref = "tel:+19803274282";
       <div class="projects-row">
         <div class="section-heading">
           <h2 id="projects-heading">my favorite projects</h2>
-          <p class="project-hint"><span>click on them to hear me yap abt it</span></p>
+          <p class="project-hint">
+            <span class="project-hint__desktop">click on them to hear me yap about it</span>
+            <span class="project-hint__mobile">swipe and tap to hear me yap about it</span>
+          </p>
         </div>
         <ProjectStack />
       </div>
 
       <div class="resource-rows" aria-label="Portfolio links">
         <div class="resource-row">
-          <p>tools I use:</p>
-          <a href="/workflow/">click here</a>
+          <p>my stack + AI workflow:</p>
+          <a href="/workflow/" data-astro-prefetch="load" aria-label="Click here to see my stack and AI workflow"
+            >click here</a
+          >
         </div>
         <div class="resource-row">
           <p>my email + phone:</p>
