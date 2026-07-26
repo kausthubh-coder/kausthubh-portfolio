@@ -48,7 +48,7 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
       <p class="pd-meta">
         {
           project.links.map((link, index) => (
-            <>
+            <span class="pd-meta__item">
               {index > 0 && <span aria-hidden="true">&middot;</span>}
               <a
                 href={link.href}
@@ -57,7 +57,7 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
               >
                 {link.label} &rarr;
               </a>
-            </>
+            </span>
           ))
         }
       </p>

@@ -583,6 +583,12 @@ svg {
   color: var(--muted);
 }
 
+.pd-meta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .pd-meta a {
   color: oklch(0.47 0.28 264);
   font-weight: 600;
