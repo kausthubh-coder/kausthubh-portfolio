@@ -24,6 +24,7 @@ const fanProjects = projects.map((project) => ({
             class="project-stack__logo"
             src={project.logo}
             alt={project.alt}
+            data-project-logo={project.slug}
             style={`view-transition-name: project-logo-${project.slug};`}
             width="384"
             height="384"
@@ -68,6 +69,7 @@ const fanProjects = projects.map((project) => ({
               height="112"
               loading="eager"
               decoding="async"
+              data-project-logo={project.slug}
               style={index === 0 ? `view-transition-name: project-logo-${project.slug};` : undefined}
             />
           </button>
@@ -98,12 +100,28 @@ const fanProjects = projects.map((project) => ({
     const gesture = fan.querySelector("[data-project-fan-gesture]");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let active = 0;
+    let morphEnabled = true;
     let pointerStart = null;
     let didSwipe = false;
 
+    const stackLogos = [...document.querySelectorAll(".project-stack--desktop [data-project-logo]")];
+
     const wrap = (value) => (value + fanProjects.length) % fanProjects.length;
 
-    const setActive = (next) => {
+    // Only one logo per project may claim the shared name, so the fan hands it
+    // to whichever mark is selected. Whichever list is hidden sits this out.
+    const applyMorphNames = () => {
+      marks.forEach((mark, index) => {
+        const image = mark.querySelector("img");
+        image.style.viewTransitionName =
+          morphEnabled && index === active ? `project-logo-${fanProjects[index].slug}` : "none";
+      });
+      stackLogos.forEach((image) => {
+        image.style.viewTransitionName = morphEnabled ? `project-logo-${image.dataset.projectLogo}` : "none";
+      });
+    };
+
+    const setActive = (next, options = {}) => {
       active = wrap(next);
       const project = fanProjects[active];
 
@@ -113,13 +131,12 @@ const fanProjects = projects.map((project) => ({
         if (offset < -1) offset += fanProjects.length;
 
         const selected = index === active;
-        const image = mark.querySelector("img");
         mark.dataset.offset = String(offset);
         mark.classList.toggle("is-active", selected);
         mark.setAttribute("aria-pressed", String(selected));
         mark.setAttribute("aria-label", `${selected ? "Open" : "Show"} ${fanProjects[index].name}`);
-        image.style.viewTransitionName = selected ? `project-logo-${fanProjects[index].slug}` : "none";
       });
+      applyMorphNames();
 
       word.textContent = project.name;
       name.textContent = project.name;
@@ -128,8 +145,29 @@ const fanProjects = projects.map((project) => ({
       link.setAttribute("aria-label", `Open ${project.name}`);
 
       copy.classList.remove("is-entering");
-      if (!reducedMotion.matches) requestAnimationFrame(() => copy.classList.add("is-entering"));
+      if (!options.settled && !reducedMotion.matches) {
+        requestAnimationFrame(() => copy.classList.add("is-entering"));
+      }
     };
+
+    // Coming back from a project page: land on the project the visitor just
+    // left, and sit out the shared logo when the mark it morphs from is gone.
+    document.addEventListener("portfolio:return", (event) => {
+      const { slug, morph, transition } = event.detail ?? {};
+      const index = fanProjects.findIndex((project) => project.slug === slug);
+
+      morphEnabled = morph !== false;
+      if (index >= 0) setActive(index, { settled: true });
+      else applyMorphNames();
+
+      if (morphEnabled) return;
+      const restore = () => {
+        morphEnabled = true;
+        applyMorphNames();
+      };
+      if (transition) transition.finished.then(restore, restore);
+      else restore();
+    });
 
     marks.forEach((mark, index) => {
       mark.addEventListener("click", () => {
