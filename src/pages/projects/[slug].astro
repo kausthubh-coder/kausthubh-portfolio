@@ -45,6 +45,22 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
         <h1 id="project-title">{project.name}</h1>
       </div>
       <p class="pd-tagline">{project.tagline}</p>
+      <p class="pd-meta">
+        {
+          project.links.map((link, index) => (
+            <span class="pd-meta__item">
+              {index > 0 && <span aria-hidden="true">&middot;</span>}
+              <a
+                href={link.href}
+                target={isExternalLink(link.href) ? "_blank" : undefined}
+                rel={isExternalLink(link.href) ? "noreferrer" : undefined}
+              >
+                {link.label} &rarr;
+              </a>
+            </span>
+          ))
+        }
+      </p>
       <p class="pd-summary">{project.summary}</p>
     </section>
 
@@ -156,21 +172,7 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
       </div>
     </section>
 
-    <div class="pd-resources" aria-label="Project links">
-      {
-        project.links.map((link) => (
-          <div class="pd-resource-row">
-            <p>{link.label}:</p>
-            <a
-              href={link.href}
-              target={isExternalLink(link.href) ? "_blank" : undefined}
-              rel={isExternalLink(link.href) ? "noreferrer" : undefined}
-            >
-              {link.note}
-            </a>
-          </div>
-        ))
-      }
+    <div class="pd-resources" aria-label="Back to home">
       <div class="pd-resource-row">
         <p>seen enough:</p>
         <a href="/">back home</a>
