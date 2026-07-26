@@ -60,6 +60,15 @@ const {
               return;
             }
 
+            // Coming back from elsewhere on the site is not a first impression,
+            // and the intro would fight the return transition.
+            const arrivedFrom = window.navigation?.activation?.from;
+            if (arrivedFrom && arrivedFrom.url !== location.href) {
+              writePlayed();
+              doc.dataset.introState = "done";
+              return;
+            }
+
             writePlayed();
             window.__kausthubhIntroStarted = true;
             doc.dataset.introState = "running";
@@ -68,6 +77,74 @@ const {
         </script>
       )
     }
+    <script is:inline>
+      (() => {
+        const returnKey = "kausthubh:nav:return";
+        const asUrl = (value) => new URL(value, location.href);
+        const slugOf = (value) => {
+          const match = asUrl(value).pathname.match(/^\/projects\/([^/]+)\/?$/);
+          return match ? match[1] : null;
+        };
+        const depthOf = (value) => {
+          if (slugOf(value)) return 2;
+          return asUrl(value).pathname.replace(/\/+$/, "") ? 1 : 0;
+        };
+        const tagDirection = (transition, from, to) => {
+          if (!transition || !from || !to) return;
+          transition.types?.add?.(depthOf(to) < depthOf(from) ? "nav-back" : "nav-forward");
+        };
+        const onScreen = (element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.bottom > 0 && rect.top < window.innerHeight;
+        };
+
+        window.addEventListener("pageswap", (event) => {
+          const from = event.activation?.from?.url;
+          const to = event.activation?.entry?.url;
+          if (!from || !to) return;
+          tagDirection(event.viewTransition, from, to);
+
+          const slug = slugOf(from);
+          if (!slug || depthOf(to) !== 0) return;
+
+          // The hero mark anchors the morph home. Once it is scrolled out of
+          // view it would streak across the screen, so fall back to a fade.
+          const mark = document.querySelector("[data-project-mark]");
+          const morph = Boolean(mark && onScreen(mark));
+          if (mark && !morph) mark.style.viewTransitionName = "none";
+          try {
+            sessionStorage.setItem(returnKey, JSON.stringify({ slug, morph }));
+          } catch {
+            return;
+          }
+        });
+
+        window.addEventListener("pagereveal", (event) => {
+          const activation = window.navigation?.activation;
+          tagDirection(event.viewTransition, activation?.from?.url, activation?.entry?.url);
+
+          // A restored page may still be carrying a mark we suppressed on the
+          // way out, so hand the shared name back before anything paints.
+          const mark = document.querySelector("[data-project-mark]");
+          if (mark) mark.style.viewTransitionName = `project-logo-${mark.dataset.projectMark}`;
+
+          let detail = null;
+          try {
+            const raw = sessionStorage.getItem(returnKey);
+            sessionStorage.removeItem(returnKey);
+            detail = raw ? JSON.parse(raw) : null;
+          } catch {
+            detail = null;
+          }
+          if (!detail) return;
+          document.dispatchEvent(
+            new CustomEvent("portfolio:return", {
+              detail: { ...detail, transition: event.viewTransition ?? null },
+            }),
+          );
+        });
+      })();
+    </script>
     <title>{title}</title>
   </head>
   <body>

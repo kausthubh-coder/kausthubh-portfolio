@@ -12,38 +12,151 @@
   --inverse-ink: oklch(0.98 0 0);
   --max-width: 1180px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-morph: cubic-bezier(0.32, 1.08, 0.4, 1);
 }
 
 @view-transition {
   navigation: auto;
 }
 
+/* Home is captured in blocks rather than as one plane, so its content can
+   arrive in reading order around the logo instead of all at once. */
+.identity-row {
+  view-transition-name: home-identity;
+}
+
+.intro-copy {
+  view-transition-name: home-copy;
+}
+
+.resource-rows {
+  view-transition-name: home-links;
+}
+
+/* The pages hand off rather than cross-fade: the outgoing one clears before the
+   incoming one starts, so the two never sit on top of each other as mush. That
+   leaves a beat where only the logo is on screen, which is the point. */
 ::view-transition-old(root) {
-  animation: page-leave 150ms var(--ease-out) both;
+  animation: page-leave 170ms var(--ease-out) both;
 }
 
 ::view-transition-new(root) {
-  animation: page-enter 260ms var(--ease-out) both;
+  animation: page-enter 380ms var(--ease-out) 140ms both;
 }
 
+/* Going back reverses the forward motion instead of repeating it. */
+:root:active-view-transition-type(nav-back)::view-transition-old(root) {
+  animation: page-leave-back 170ms var(--ease-out) both;
+}
+
+:root:active-view-transition-type(nav-back)::view-transition-new(root) {
+  animation: page-enter-back 380ms var(--ease-out) 140ms both;
+}
+
+/* Leaving home: blocks peel away bottom-up, ahead of the logo taking off. */
+::view-transition-old(home-links) {
+  animation: home-block-out 170ms var(--ease-out) both;
+}
+
+::view-transition-old(home-copy) {
+  animation: home-block-out 170ms var(--ease-out) 40ms both;
+}
+
+::view-transition-old(home-identity) {
+  animation: home-block-out 170ms var(--ease-out) 80ms both;
+}
+
+/* Coming back: they resolve into place top-down while the logo settles. */
+::view-transition-new(home-identity) {
+  animation: home-block-in 360ms var(--ease-out) 140ms both;
+}
+
+::view-transition-new(home-copy) {
+  animation: home-block-in 360ms var(--ease-out) 200ms both;
+}
+
+::view-transition-new(home-links) {
+  animation: home-block-in 360ms var(--ease-out) 300ms both;
+}
+
+/* The logo is the through-line, so it runs longest and lands last. */
 ::view-transition-group(project-logo-studi),
 ::view-transition-group(project-logo-amy),
 ::view-transition-group(project-logo-kriyan) {
-  animation-duration: 440ms;
-  animation-timing-function: var(--ease-out);
+  animation-duration: 540ms;
+  animation-timing-function: var(--ease-morph);
+}
+
+/* Both ends are the same artwork at the same spot, so the dissolve between them
+   reads only as the mark gaining or losing the colour home holds it back to.
+   Matching the group's timing keeps that from finishing early and sitting. */
+::view-transition-old(project-logo-studi),
+::view-transition-old(project-logo-amy),
+::view-transition-old(project-logo-kriyan),
+::view-transition-new(project-logo-studi),
+::view-transition-new(project-logo-amy),
+::view-transition-new(project-logo-kriyan) {
+  animation-duration: 540ms;
+  animation-timing-function: var(--ease-morph);
+  block-size: 100%;
+  object-fit: contain;
+}
+
+/* The marks that aren't morphing have no counterpart to hold onto, so they
+   travel with the rest of home instead of snapping in at full strength. */
+::view-transition-old(project-logo-studi):only-child,
+::view-transition-old(project-logo-amy):only-child,
+::view-transition-old(project-logo-kriyan):only-child {
+  animation: home-block-out 170ms var(--ease-out) both;
+}
+
+::view-transition-new(project-logo-studi):only-child,
+::view-transition-new(project-logo-amy):only-child,
+::view-transition-new(project-logo-kriyan):only-child {
+  animation: home-block-in 360ms var(--ease-out) 240ms both;
 }
 
 @keyframes page-leave {
   to {
     opacity: 0;
-    transform: translateY(-8px) scale(0.99);
+    transform: translateY(-10px) scale(0.988);
   }
 }
 
 @keyframes page-enter {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.992);
+    transform: translateY(12px) scale(0.992);
+  }
+}
+
+@keyframes page-leave-back {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.992);
+  }
+}
+
+@keyframes page-enter-back {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.988);
+  }
+}
+
+@keyframes home-block-out {
+  to {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes home-block-in {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(-16px);
   }
 }
 
