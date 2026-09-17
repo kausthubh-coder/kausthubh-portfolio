@@ -1,6 +1,7 @@
 ---
 import * as simpleIcons from "simple-icons";
 import { projects } from "../../data/projects";
+import { site } from "../../data/site";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const iconFor = (key?: string): { path: string } | null => {
@@ -18,7 +19,7 @@ export function getStaticPaths() {
 
 const { project } = Astro.props;
 const isExternalLink = (href: string) => /^https?:\/\//.test(href);
-const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")} | kausthubh`;
+const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")} | ${site.name}`;
 ---
 
 <BaseLayout title={pageTitle} description={project.summary}>
@@ -47,10 +48,11 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
       </div>
       <p class="pd-tagline">{project.tagline}</p>
       <p class="pd-meta">
+        <span class="pd-status">{project.status}</span>
         {
-          project.links.map((link, index) => (
+          project.links.map((link) => (
             <span class="pd-meta__item">
-              {index > 0 && <span aria-hidden="true">&middot;</span>}
+              <span aria-hidden="true">&middot;</span>
               <a
                 href={link.href}
                 target={isExternalLink(link.href) ? "_blank" : undefined}
@@ -120,7 +122,7 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
       <ol class="pd-features">
         {
           project.features.map((feature, index) => (
-            <li tabindex="0">
+            <li>
               <span class="pd-features__index">{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <h3>{feature.title}</h3>
@@ -147,16 +149,16 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
           ))
         }
       </div>
-      <div class="pd-stack" aria-label="Tech stack">
-        <p class="pd-stack__label">runs on</p>
-        <div class="pd-stack__grid">
+      <div class="pd-stack">
+        <p class="pd-stack__label" id="stack-title">runs on</p>
+        <ul class="pd-stack__grid" aria-labelledby="stack-title">
           {
             project.stack.map((item) => {
               const icon = iconFor(item.icon);
               return (
-                <span class="pd-stack__item" tabindex="0">
+                <li class="pd-stack__item" tabindex="0">
                   {icon ? (
-                    <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                       <path d={icon.path} />
                     </svg>
                   ) : (
@@ -164,16 +166,16 @@ const pageTitle = `${project.name} — ${project.description.replace(/\.$/, "")}
                   )}
                   <strong>{item.name}</strong>
                   <em>{item.why}</em>
-                </span>
+                </li>
               );
             })
           }
-        </div>
-        <p class="pd-stack__default">hover a tool to see why it is here</p>
+        </ul>
+        <p class="pd-stack__default" aria-hidden="true">hover a tool to see why it is here</p>
       </div>
     </section>
 
-    <div class="pd-resources" aria-label="Back to home">
+    <div class="pd-resources">
       <div class="pd-resource-row">
         <p>seen enough:</p>
         <a href="/">back home</a>

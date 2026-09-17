@@ -1,5 +1,6 @@
 ---
 import * as simpleIcons from "simple-icons";
+import { emailHref, site } from "../data/site";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 type Tool = {
@@ -107,9 +108,20 @@ const appTools: Tool[] = [
     accent: "#8838ff",
   },
 ];
+
+const sections = [
+  { id: "daily", title: "what I use every day", tools: dailyTools, offset: 0 },
+  { id: "apps", title: "what I build products with", tools: appTools, offset: dailyTools.length },
+];
+
+const updated = new Date(`${site.workflowUpdated}T12:00:00Z`);
+const updatedLabel = updated.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 ---
 
-<BaseLayout title="Tools | kausthubh" description="The tools Kausthubh uses to think, build, and ship products.">
+<BaseLayout
+  title={`Stack + AI workflow | ${site.name}`}
+  description="The tools, services, and AI workflow Kausthubh uses to think, build, and ship products."
+>
   <main class="detail-page tools-page">
     <a href="/" class="tools-back"><span aria-hidden="true">&larr;</span> home</a>
 
@@ -123,74 +135,44 @@ const appTools: Tool[] = [
         The software, services, and systems I keep reaching for. This is the short version for now; I will add the
         deeper why behind each choice as the stack changes.
       </p>
+      <p class="tools-updated">last updated <time datetime={site.workflowUpdated}>{updatedLabel}</time></p>
     </header>
 
-    <section class="tools-section tools-section--daily" aria-labelledby="daily-tools-title">
-      <h2 id="daily-tools-title">what I use every day</h2>
-      <ul class="tools-list">
-        {
-          dailyTools.map((tool, index) => {
-            const icon = iconFor(tool.icon);
-            return (
-              <li class="tools-item" style={`--tool-accent: ${tool.accent}; --tool-index: ${index};`}>
-                <span class="tools-icon" aria-hidden="true">
-                  {tool.image ? (
-                    <img src={tool.image} alt="" width="38" height="38" loading="lazy" />
-                  ) : icon ? (
-                    <svg viewBox="0 0 24 24" role="presentation"><path d={icon.path} /></svg>
-                  ) : (
-                    <span class="tools-mark">{tool.mark}</span>
-                  )}
-                </span>
-                <div class="tools-copy">
-                  <h3>
-                    {tool.href ? <a href={tool.href} target="_blank" rel="noreferrer">{tool.name}</a> : tool.name}
-                  </h3>
-                  <p><span aria-hidden="true">&#8627;</span>{tool.use}</p>
-                </div>
-              </li>
-            );
-          })
-        }
-      </ul>
-    </section>
-
-    <section class="tools-section tools-section--apps" aria-labelledby="app-tools-title">
-      <h2 id="app-tools-title">what I build products with</h2>
-      <ul class="tools-list">
-        {
-          appTools.map((tool, index) => {
-            const icon = iconFor(tool.icon);
-            return (
-              <li
-                class="tools-item"
-                style={`--tool-accent: ${tool.accent}; --tool-index: ${index + dailyTools.length};`}
-              >
-                <span class="tools-icon" aria-hidden="true">
-                  {tool.image ? (
-                    <img src={tool.image} alt="" width="38" height="38" loading="lazy" />
-                  ) : icon ? (
-                    <svg viewBox="0 0 24 24" role="presentation"><path d={icon.path} /></svg>
-                  ) : (
-                    <span class="tools-mark">{tool.mark}</span>
-                  )}
-                </span>
-                <div class="tools-copy">
-                  <h3>
-                    {tool.href ? <a href={tool.href} target="_blank" rel="noreferrer">{tool.name}</a> : tool.name}
-                  </h3>
-                  <p><span aria-hidden="true">&#8627;</span>{tool.use}</p>
-                </div>
-              </li>
-            );
-          })
-        }
-      </ul>
-    </section>
+    {
+      sections.map((section) => (
+        <section class={`tools-section tools-section--${section.id}`} aria-labelledby={`${section.id}-tools-title`}>
+          <h2 id={`${section.id}-tools-title`}>{section.title}</h2>
+          <ul class="tools-list">
+            {section.tools.map((tool, index) => {
+              const icon = iconFor(tool.icon);
+              return (
+                <li class="tools-item" style={`--tool-accent: ${tool.accent}; --tool-index: ${index + section.offset};`}>
+                  <span class="tools-icon" aria-hidden="true">
+                    {tool.image ? (
+                      <img src={tool.image} alt="" width="38" height="38" loading="lazy" />
+                    ) : icon ? (
+                      <svg viewBox="0 0 24 24"><path d={icon.path} /></svg>
+                    ) : (
+                      <span class="tools-mark">{tool.mark}</span>
+                    )}
+                  </span>
+                  <div class="tools-copy">
+                    <h3>
+                      {tool.href ? <a href={tool.href} target="_blank" rel="noreferrer">{tool.name}</a> : tool.name}
+                    </h3>
+                    <p><span aria-hidden="true">&#8627;</span>{tool.use}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))
+    }
 
     <footer class="tools-footer">
       <span>still changing, still shipping.</span>
-      <a href="mailto:kausthubh2007@gmail.com">tell me what I am missing</a>
+      <a href={emailHref}>tell me what I am missing</a>
     </footer>
   </main>
 </BaseLayout>

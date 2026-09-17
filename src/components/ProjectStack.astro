@@ -9,7 +9,7 @@ const fanProjects = projects.map((project) => ({
 }));
 ---
 
-<div class="project-stack project-stack--desktop" aria-label="Favorite projects">
+<div class="project-stack project-stack--desktop" role="group" aria-label="Favorite projects" data-project-stack>
   {
     projects.map((project, index) => (
       <a
@@ -44,27 +44,29 @@ const fanProjects = projects.map((project) => ({
 <div
   class="project-fan"
   data-project-fan
-  tabindex="0"
-  aria-label="Favorite projects. Tap a project to select it, then tap it again to open. Use the arrow keys or swipe to browse."
+  role="group"
+  aria-label="Favorite projects. Swipe or use the arrow keys to browse, then open the one in front."
 >
   <span class="project-fan__word" data-project-fan-word aria-hidden="true">{fanProjects[0].name}</span>
 
   <div class="project-fan__stage" data-project-fan-gesture>
-    <div class="project-fan__marks" role="group" aria-label="Choose a project">
+    <div class="project-fan__marks">
       {
         fanProjects.map((project, index) => (
-          <button
+          <a
             class:list={["project-fan__mark", { "is-active": index === 0 }]}
-            type="button"
+            href={`/projects/${project.slug}/`}
+            draggable="false"
             data-project-fan-mark
             data-index={index}
             data-offset={index === 0 ? "0" : index === 1 ? "1" : "-1"}
-            aria-label={index === 0 ? `Open ${project.name}` : `Show ${project.name}`}
-            aria-pressed={index === 0 ? "true" : "false"}
+            aria-label={`${project.name}: ${project.description}`}
+            aria-current={index === 0 ? "true" : undefined}
           >
             <img
               src={project.logo}
               alt=""
+              draggable="false"
               width="112"
               height="112"
               loading="eager"
@@ -72,7 +74,7 @@ const fanProjects = projects.map((project) => ({
               data-project-logo={project.slug}
               style={index === 0 ? `view-transition-name: project-logo-${project.slug};` : undefined}
             />
-          </button>
+          </a>
         ))
       }
     </div>
@@ -80,11 +82,55 @@ const fanProjects = projects.map((project) => ({
     <div class="project-fan__copy" data-project-fan-copy aria-live="polite">
       <strong data-project-fan-name>{fanProjects[0].name}</strong>
       <span data-project-fan-description>{fanProjects[0].description}</span>
-      <a data-project-fan-link href={`/projects/${fanProjects[0].slug}/`} data-astro-prefetch="tap" hidden></a>
     </div>
   </div>
 
 </div>
+
+<script is:inline>
+  (() => {
+    const stack = document.querySelector("[data-project-stack]");
+    if (!stack || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const doc = document.documentElement;
+    const storageKey = "kausthubh:stack:rollcall";
+    const rollcallMs = 3400;
+    try {
+      if (window.sessionStorage.getItem(storageKey) === "1") return;
+    } catch {
+      return;
+    }
+
+    // Once someone has played with the stack it has done its job.
+    const settle = () => stack.classList.remove("is-rollcall", "is-nudging");
+    stack.addEventListener("pointerenter", settle, { once: true });
+    stack.addEventListener("focusin", settle, { once: true });
+
+    const begin = () => {
+      if (stack.matches(":hover, :focus-within")) return;
+      try {
+        window.sessionStorage.setItem(storageKey, "1");
+      } catch {
+        return;
+      }
+      stack.classList.add("is-rollcall");
+      window.setTimeout(() => {
+        if (stack.classList.contains("is-rollcall")) stack.classList.replace("is-rollcall", "is-nudging");
+      }, rollcallMs);
+    };
+
+    if (doc.dataset.introState === "done") {
+      window.setTimeout(begin, 700);
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      if (doc.dataset.introState !== "done") return;
+      observer.disconnect();
+      window.setTimeout(begin, 450);
+    });
+    observer.observe(doc, { attributes: true, attributeFilter: ["data-intro-state"] });
+  })();
+</script>
 
 <script is:inline define:vars={{ fanProjects }}>
   (() => {
@@ -95,7 +141,6 @@ const fanProjects = projects.map((project) => ({
     const word = fan.querySelector("[data-project-fan-word]");
     const name = fan.querySelector("[data-project-fan-name]");
     const description = fan.querySelector("[data-project-fan-description]");
-    const link = fan.querySelector("[data-project-fan-link]");
     const copy = fan.querySelector("[data-project-fan-copy]");
     const gesture = fan.querySelector("[data-project-fan-gesture]");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -133,16 +178,14 @@ const fanProjects = projects.map((project) => ({
         const selected = index === active;
         mark.dataset.offset = String(offset);
         mark.classList.toggle("is-active", selected);
-        mark.setAttribute("aria-pressed", String(selected));
-        mark.setAttribute("aria-label", `${selected ? "Open" : "Show"} ${fanProjects[index].name}`);
+        if (selected) mark.setAttribute("aria-current", "true");
+        else mark.removeAttribute("aria-current");
       });
       applyMorphNames();
 
       word.textContent = project.name;
       name.textContent = project.name;
       description.textContent = project.description;
-      link.href = `/projects/${project.slug}/`;
-      link.setAttribute("aria-label", `Open ${project.name}`);
 
       copy.classList.remove("is-entering");
       if (!options.settled && !reducedMotion.matches) {
@@ -170,16 +213,20 @@ const fanProjects = projects.map((project) => ({
     });
 
     marks.forEach((mark, index) => {
-      mark.addEventListener("click", () => {
+      // The mark in front is a plain link. The ones behind it step forward first.
+      mark.addEventListener("click", (event) => {
         if (didSwipe) {
           didSwipe = false;
+          event.preventDefault();
           return;
         }
-        if (index === active) {
-          window.location.assign(link.href);
-          return;
-        }
+        if (index === active) return;
+        event.preventDefault();
         setActive(index);
+      });
+      // Tabbing onto a mark brings it forward, so Enter opens what is focused.
+      mark.addEventListener("focus", () => {
+        if (index !== active && mark.matches(":focus-visible")) setActive(index);
       });
     });
 
@@ -284,6 +331,9 @@ const fanProjects = projects.map((project) => ({
       border-radius: 28px;
       background: transparent;
       padding: 0;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
       opacity: 0.46;
       filter: grayscale(1);
       transform: translate3d(-50%, -50%, 0);
