@@ -1,29 +1,27 @@
 # Product
 
-Status: working context, pending final owner answers.
-Updated: 2026-07-03 01:35 EDT
+Updated: 2026-09-17
 
-## Register
+## What this is
 
-brand
+A compact, kinetic personal site for Kausthubh N. It is a first impression, an index of favorite projects, and a way to get in touch. It is not a resume, and it does not pin Kausthubh to a role or a job title: the work is the pitch.
 
-## Users
+## Who it is for
 
-- Hiring managers and technical evaluators checking taste, shipping ability, and project depth.
-- Collaborators and technical peers looking for what Kausthubh makes and how to contact him.
-- Friends or broader visitors who should understand the person quickly without reading a resume.
+Anyone who lands on it: people deciding whether to work with him, technical peers, friends, and curious strangers. They should get who he is and what he makes in a few seconds, and be able to go deep on a project if they want to.
 
-## Product Purpose
+## What is on it
 
-This portfolio is a compact, kinetic personal site that proves visual taste and engineering judgment through the interface itself. It should work as a first impression, a project index, and a lightweight contact surface.
+- **Home:** identity, one line of voice, the project stack, a link to the stack + AI workflow page, and email.
+- **Project pages** (Studi, Amy, Kriyan): status and links, real product screens, why it exists, what it does, and how it is built.
+- **Stack + AI workflow:** the tools in daily use and the ones products get built with, with a last-updated date.
+- **404:** on brand, with a way back.
 
-The current surface includes a landing page, social links, project logo interactions, placeholder project pages, contact paths, a workflow page, and a loader/start animation.
+There is no contact page and no phone number. Email and the social links are the contact surface.
 
-## Brand Personality
+## Personality
 
-Precise, kinetic, human.
-
-The tone should feel confident and spare, with a little motion-driven personality. It should not read like a generic AI portfolio template.
+Precise, kinetic, human. Confident and spare, lowercase and a little unserious, with motion doing some of the talking. It should never read like a generic AI portfolio template.
 
 ## Anti-references
 
@@ -36,26 +34,19 @@ The tone should feel confident and spare, with a little motion-driven personalit
 - Monospace as the main shortcut for technical.
 - A full-screen loader that hides content for too long.
 
-## Design Principles
+## Design principles
 
-- Show the work quickly. The first screen should communicate identity and project direction without a marketing preamble.
-- Make motion functional. The start animation should orient the visitor, not become a speed bump.
-- Keep the page mostly static by default. Add JavaScript only for interactive moments that earn it.
-- Let logos behave like objects. Project marks can reveal depth through hover, focus, press, and transition states.
-- Leave placeholders honest. If a case study is not finished, the page should say what is coming and offer a useful next action.
+- **Show the work quickly.** The first screen communicates identity and the projects without a marketing preamble.
+- **Teach by showing.** If something is interactive, the page demonstrates it (the project roll call) instead of relying on a hint nobody reads.
+- **Make motion functional.** The intro orients the visitor and stays short. It plays on a first visit, never on the way back from another page.
+- **Fun may decorate, never gate.** Hover and motion can add emphasis, but no content or link is reachable only by hovering.
+- **Mostly static.** JavaScript only for interactive moments that earn it, inline and small.
+- **Let logos behave like objects.** Project marks carry hover, focus, press, and page-transition states.
+- **Stay honest.** Real screenshots, real status. No placeholder pages get published.
 
-## Accessibility & Inclusion
+## Accessibility
 
-- Target WCAG 2.2 AA for contrast, focus states, keyboard access, and reduced motion.
-- All social and contact links must have accessible names.
-- Project logo interactions must be usable by keyboard and touch, not hover-only.
-- The start animation must respect `prefers-reduced-motion` and must never block reading or navigation.
-
-## Confirmation Needed
-
-- Final name styling, pronunciation if relevant, and preferred headline.
-- Primary audience priority: jobs, collaborations, friends, clients, or mixed personal archive.
-- Final social links and contact path.
-- Project list and which logos/assets are approved.
-- Desired emotional range: calmer, stranger, more technical, warmer, more playful, or more severe.
-- Reference sites and anti-reference sites.
+- Target WCAG 2.2 AA for contrast, focus states, keyboard access, target size, and reduced motion.
+- Every link has an accessible name; anything that navigates is a real link.
+- Project interactions work by keyboard and touch, not hover only.
+- The intro, roll call, and page transitions respect `prefers-reduced-motion`, and the intro can never leave the page hidden.
