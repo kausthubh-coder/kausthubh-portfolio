@@ -1,0 +1,218 @@
+---
+import { projects } from "../data/projects";
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title={`404 | ${site.name}`} description="This page does not exist." noindex>
+  <main class="lost">
+    <section class="lost__panel" aria-labelledby="lost-title">
+      <p class="lost__code" aria-hidden="true">
+        <span class="lost__digit">4</span>
+        <a class="lost__zero" href="/" tabindex="-1">
+          <img src="/logo.webp" alt="" width="288" height="288" decoding="async" />
+        </a>
+        <span class="lost__digit lost__digit--last">4</span>
+      </p>
+
+      <h1 id="lost-title">just tryna find that page, and couldn't.</h1>
+      <p class="lost__copy">
+        it moved, it never existed, or somebody fat-fingered the link. the logo up there came loose looking for it.
+      </p>
+
+      <div class="lost__rows">
+        <div class="lost__row">
+          <p>things that do exist:</p>
+          <span class="lost__projects">
+            {
+              projects.map((project) => (
+                <a href={`/projects/${project.slug}/`} aria-label={`${project.name}: ${project.description}`}>
+                  <img src={project.logo} alt="" width="44" height="44" loading="lazy" decoding="async" />
+                </a>
+              ))
+            }
+          </span>
+        </div>
+        <div class="lost__row">
+          <p>or bail:</p>
+          <a class="lost__home" href="/">take me home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .lost {
+    min-height: 100svh;
+    width: min(100%, 1280px);
+    margin: 0 auto;
+    display: grid;
+    align-items: center;
+    padding: clamp(40px, 8vw, 96px) 24px;
+  }
+
+  .lost__panel {
+    width: min(100%, 780px);
+    margin: 0 auto;
+  }
+
+  .lost__code {
+    --tile: clamp(5.4rem, 21vw, 10.5rem);
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 3vw, 34px);
+    margin: 0 0 clamp(36px, 6vw, 60px);
+    font-size: clamp(7.4rem, 29vw, 14.5rem);
+    font-weight: 760;
+    letter-spacing: -0.05em;
+    line-height: 0.78;
+  }
+
+  .lost__digit {
+    display: inline-block;
+    animation: lost-digit-in 620ms var(--ease-out) both;
+  }
+
+  .lost__digit--last {
+    animation-delay: 120ms;
+  }
+
+  /* The zero is the logo, hanging from one corner like a sign that lost a screw. */
+  .lost__zero {
+    width: var(--tile);
+    height: var(--tile);
+    flex: 0 0 var(--tile);
+    display: block;
+    transform-origin: 8% 6%;
+    animation: lost-swing 3600ms cubic-bezier(0.36, 0, 0.64, 1) 300ms infinite alternate both;
+  }
+
+  .lost__zero img {
+    width: 100%;
+    height: 100%;
+    transition: transform 420ms var(--ease-morph);
+  }
+
+  .lost__zero:hover {
+    animation-play-state: paused;
+  }
+
+  .lost__zero:hover img {
+    transform: scale(1.06);
+  }
+
+  .lost h1 {
+    max-width: 18ch;
+    margin: 0;
+    font-size: clamp(1.55rem, 2.75vw, 2.05rem);
+    font-weight: 390;
+    line-height: 1.14;
+    text-wrap: balance;
+  }
+
+  .lost__copy {
+    max-width: 52ch;
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .lost__rows {
+    display: grid;
+    gap: 12px;
+    margin-top: 40px;
+  }
+
+  .lost__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .lost__row p {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.3vw, 1.6rem);
+    line-height: 1.25;
+  }
+
+  .lost__projects {
+    display: flex;
+    gap: 10px;
+  }
+
+  .lost__projects a {
+    display: block;
+    border-radius: 12px;
+    transition: transform 220ms var(--ease-out);
+  }
+
+  .lost__projects img {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    object-fit: cover;
+    filter: grayscale(1) contrast(0.9);
+    opacity: 0.78;
+    transition:
+      filter 220ms var(--ease-out),
+      opacity 220ms var(--ease-out);
+  }
+
+  .lost__projects a:hover,
+  .lost__projects a:focus-visible {
+    transform: translateY(-3px) rotate(-4deg);
+  }
+
+  .lost__projects a:hover img,
+  .lost__projects a:focus-visible img {
+    filter: none;
+    opacity: 1;
+  }
+
+  .lost__home {
+    color: oklch(0.47 0.28 264);
+    font-size: clamp(1.25rem, 2.1vw, 1.5rem);
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  .lost__home:hover,
+  .lost__home:focus-visible {
+    color: oklch(0.32 0.24 264);
+  }
+
+  @keyframes lost-swing {
+    from {
+      transform: rotate(-4deg);
+    }
+
+    to {
+      transform: rotate(19deg);
+    }
+  }
+
+  @keyframes lost-digit-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.12em);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .lost__row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lost__zero {
+      animation: none;
+      transform: rotate(12deg);
+    }
+  }
+</style>
